@@ -44,13 +44,13 @@ Clona el proyecto desde GitHub usando:
 
 bash
 Copiar código
-git clone https://github.com/UCarbajo/Fitxategi-Duality.git
+git clone https://github.com/DaniN12/DaniN12-Xporioum-Fitxategi.git
 📦 Instalar dependencias
 Accede al directorio del proyecto e instala las dependencias con Composer:
 
 bash
 Copiar código
-cd Fitxategi-Duality
+cd Xporioum_Fitxategi
 composer install
 🗄️ Crear la base de datos y el usuario
 Usando HeidiSQL, phpMyAdmin o una herramienta similar:
