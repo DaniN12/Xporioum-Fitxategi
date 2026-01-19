@@ -117,3 +117,19 @@ CREATE TABLE documento (
     fecha_subida DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (incidencia_id) REFERENCES incidencia(id_incidencia)
 );
+-- 1. Insertar un idioma necesario
+INSERT INTO idioma (id_idioma, nombre, codigo) VALUES (1, 'Español', 'es');
+
+-- 2. Insertar un usuario base
+INSERT INTO usuario (id_usuario, email, contrasena, nombre, dni, idioma_id) 
+VALUES (1, 'prueba@prueba.com', '1234', 'Usuario de Prueba', '12345678Z', 1);
+
+-- 3. Insertar el profesor con ID 1
+INSERT INTO profesor (id_profesor, usuario_id) VALUES (1, 1);
+
+-- 4. Insertar una empresa necesaria
+INSERT INTO empresa (id_empresa, nombre) VALUES (1, 'San Luis');
+
+-- 5. Insertar el alumno con ID 1 vinculado al profesor 1
+INSERT INTO alumno (id_alumno, usuario_id, profesor_id, empresa_id, fecha_alta) 
+VALUES (1, 1, 1, 1, CURDATE());
