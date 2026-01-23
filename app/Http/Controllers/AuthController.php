@@ -1,19 +1,48 @@
 <?php
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\AuthController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-// Ruta de Login (Pública)
-Route::get('/login', function () { return view('auth.login'); })->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+class AuthController extends Controller
+{
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
-// RUTAS PROTEGIDAS (Solo usuarios logueados)
-Route::middleware(['auth'])->group(function () {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+        Auth::login($user);
+        return redirect('/perfil');
+    }
 
-    Route::get('/incidencias/crear', function () { return view('incidencias.create'); })->name('incidencias.create');
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect('/perfil');
+        }
+        return back()->withErrors([
+            'email' => 'Las credenciales no son válidas.',
+        ])->withInput();
+    }
 
-    Route::get('/normas', function () { return view('normas.index'); })->name('normas.index');
-
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
+}

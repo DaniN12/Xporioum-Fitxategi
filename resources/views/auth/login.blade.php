@@ -3,51 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitxategi - Login</title>
+    <title>Iniciar sesión - Fitxategi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #9ab4ff; margin: 0; font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .login-card {
-            background: white; width: 90%; max-width: 800px; border-radius: 40px;
-            display: flex; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 8px solid black;
+        .diagonal-pattern {
+            background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 2px, transparent 2px 32px);
         }
-        .left-side { width: 50%; padding: 40px; display: flex; align-items: center; justify-content: center; border-right: 4px solid #eee; }
-        .right-side { width: 50%; padding: 50px; position: relative; }
-        .lang-icons { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
-        .lang-icons img { width: 30px; border-radius: 50%; border: 2px solid #ddd; }
-        h2 { font-size: 32px; margin-bottom: 5px; font-weight: 900; }
-        p { color: #666; margin-bottom: 30px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 18px; }
-        input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; }
-        .btn-login { width: 100%; padding: 20px; background: black; color: white; border: none; border-radius: 15px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .link-register { display: block; margin-top: 20px; text-align: center; color: #555; text-decoration: none; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
     </style>
 </head>
-<body>
-    <div class="login-card">
-        <div class="left-side">
-            <img src="{{ asset('img/logo_conejo.png') }}" alt="Fitxategi Logo" style="width: 100%; max-width: 300px;">
-        </div>
-        <div class="right-side">
-            <div class="lang-icons">
-                <span>🇪🇸</span> <span>🚩</span>
+<body class="min-h-screen w-screen h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col">
+    <!-- Fondo con patrón -->
+    <div class="fixed inset-0 -z-10 bg-[#FFFFFF]">
+        <div class="absolute inset-0 opacity-20 diagonal-pattern"></div>
+    </div>
+    <!-- Contenedor principal FULL SCREEN -->
+    <div class="flex-1 flex flex-col items-stretch justify-stretch p-0 w-full h-full">
+        <div class="w-full h-full flex flex-col items-center justify-center">
+            <div class="relative overflow-hidden rounded-none bg-white shadow-2xl ring-1 ring-black/10 w-full h-full min-h-screen flex flex-col items-center justify-center">
+                <div class="flex flex-col items-center mb-6">
+                   <img src="{{ asset('images/logofitxategi.png') }}" alt="Logo Fitxategi" class="h-16 w-16 rounded-full shadow-lg mb-2 bg-white object-contain">
+                    <h1 class="text-2xl font-bold text-gray-800">Iniciar sesión</h1>
+                    <p class="text-gray-500 text-sm">Accede a tu cuenta de Fitxategi</p>
+                </div>
+                <form method="POST" action="{{ route('login') }}" class="space-y-5 w-full max-w-sm">
+                    @csrf
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" name="password" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold py-3 rounded-xl hover:shadow-lg transition">Entrar</button>
+                </form>
+                <div class="text-center mt-6 text-sm text-gray-500">
+                    ¿No tienes cuenta? <a href="{{ route('register') }}" class="text-purple-600 font-bold hover:underline">Regístrate</a>
+                </div>
             </div>
-            <h2>Bienvenido a Fitxategi</h2>
-            <p>Inicie sesión para continuar</p>
-
-            <form action="{{ route('login.post') }}" method="POST">
-                @csrf
-                <div class="input-group">
-                    <label>Email:</label>
-                    <input type="email" name="email" required placeholder="tu@email.com">
-                </div>
-                <div class="input-group">
-                    <label>Contraseña:</label>
-                    <input type="password" name="password" required placeholder="********">
-                </div>
-                <button type="submit" class="btn-login">Entrar</button>
-                <a href="{{ route('register') }}" class="link-register">¿No tienes cuenta? Regístrate aquí</a>
-            </form>
         </div>
     </div>
 </body>
