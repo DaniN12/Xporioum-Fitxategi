@@ -8,14 +8,13 @@ use App\Models\Fichaje;
 class HorasUsuarioController extends Controller
 {
     public function index()
-    {
-        $usuario = Auth::user();
+{
+    $fichajes = Fichaje::where('alumno_id', auth()->id())
+        ->latest('fecha')
+        ->latest('hora_entrada')
+        ->get();
 
-        $fichajes = Fichaje::where('alumno_id', $usuario->id)
-            ->orderBy('fecha', 'desc')
-            ->orderBy('hora_entrada', 'desc')
-            ->get();
+    return view('horas.usuario', compact('fichajes'));
+}
 
-        return view('horas.usuario', compact('fichajes'));
-    }
 }
