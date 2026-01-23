@@ -49,204 +49,172 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
     </style>
 </head>
-<body class="min-h-screen w-screen h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col">
-    <!-- Fondo con patrón -->
+<body class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col">
     <div class="fixed inset-0 -z-10 bg-[#FFFFFF]">
         <div class="absolute inset-0 opacity-20 diagonal-pattern"></div>
     </div>
-    <!-- Contenedor principal FULL SCREEN -->
-    <div class="flex-1 flex flex-col items-stretch justify-stretch p-0 w-full h-full">
-        <div class="w-full h-full">
-            <div class="relative overflow-hidden rounded-none bg-white shadow-2xl ring-1 ring-black/10 w-full h-full min-h-screen">
-                <!-- Header -->
-                <header class="h-14 bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/logofitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
-                        <div class="hidden sm:block">
-                            <div class="font-bold text-sm">Fitxategi</div>
-                            <div class="text-xs text-gray-400">Control horario</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="hidden sm:flex rounded-full">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="h-8 w-8 rounded-full"><img src="images/euskalherria.png"></button>
-                            <button class="h-8 w-8 rounded-full"><img src="images/españa.png"></button>
-                        </div>
-                    </div>
-                </header>
-                <!-- Nav desktop -->
-                <nav class="hidden md:flex items-center justify-center gap-10 bg-gradient-to-r from-[#d7a6ff] to-[#e5b8ff] py-3 font-bold text-black shadow-sm">
-                    <a href="{{ url('/perfil') }}" class="{{ request()->is('perfil*') ? 'nav-active' : '' }} hover:text-purple-800 cursor-pointer transition">Perfil</a>
-                    <a href="{{ route('normas.index') }}" class="{{ request()->is('normas*') ? 'nav-active' : '' }} hover:text-purple-800 cursor-pointer transition">Normas</a>
-                    <a href="{{ url('/incidencias') }}" class="{{ request()->is('incidencias*') ? 'nav-active' : '' }} hover:text-purple-800 cursor-pointer transition">Incidencias</a>
-                    <a href="{{ url('/fichaje') }}" class="{{ request()->is('fichaje*') ? 'nav-active' : '' }} hover:text-purple-800 cursor-pointer transition">Fichar</a>
-                    <a href="{{ url('/horas') }}" class="{{ request()->is('horas*') ? 'nav-active' : '' }} hover:text-purple-800 cursor-pointer transition">Tus horas</a>
-                </nav>
-                <!-- Contenido principal FULL WIDTH -->
-                <main class="bg-[#f2dcff] p-0 md:p-0 min-h-[calc(100vh-110px)] w-full h-full flex flex-col items-center justify-start">
-                    <div class="w-full h-full flex flex-col items-center justify-start space-y-6 animate-fade-in px-2 py-6 md:px-8 md:py-10">
-                        <!-- Bienvenida -->
-                        @auth
-                        <div class="flex items-center justify-between w-full max-w-5xl">
-                            <div>
 
-                        {{ \Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
+    <div class="flex-1 flex flex-col w-full">
+        <div class="relative bg-white shadow-2xl ring-1 ring-black/10 w-full min-h-screen flex flex-col">
+
+            <header class="h-14 flex-none bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4 z-10">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('images/fitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
+                    <div class="hidden xs:block">
+                        <div class="font-bold text-sm">Fitxategi</div>
+                        <div class="text-xs text-gray-400">Control horario</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="h-8 w-8 rounded-full overflow-hidden hover:scale-110 transition"><img src="images/euskalherria.png" class="w-full h-full object-cover"></button>
+                    <button class="h-8 w-8 rounded-full overflow-hidden hover:scale-110 transition"><img src="images/españa.png" class="w-full h-full object-cover"></button>
+                </div>
+            </header>
+
+            <nav class="hidden md:flex flex-none items-center justify-center gap-10 bg-gradient-to-r from-[#d7a6ff] to-[#e5b8ff] py-3 font-bold text-black shadow-sm">
+                <a href="{{ url('/perfil') }}" class="{{ request()->is('perfil*') ? 'nav-active' : '' }} hover:text-purple-800 transition">Perfil</a>
+                <a href="{{ route('normas.index') }}" class="{{ request()->is('normas*') ? 'nav-active' : '' }} hover:text-purple-800 transition">Normas</a>
+                <a href="{{ url('/incidencias') }}" class="{{ request()->is('incidencias*') ? 'nav-active' : '' }} hover:text-purple-800 transition">Incidencias</a>
+                <a href="{{ url('/fichaje') }}" class="{{ request()->is('fichaje*') ? 'nav-active' : '' }} hover:text-purple-800 transition">Fichar</a>
+                <a href="{{ url('/horas') }}" class="{{ request()->is('horas*') ? 'nav-active' : '' }} hover:text-purple-800 transition">Tus horas</a>
+            </nav>
+
+            <main class="flex-1 bg-[#f2dcff] overflow-y-auto pb-20 md:pb-10">
+                <div class="max-w-5xl mx-auto p-4 md:p-8 space-y-6 animate-fade-in">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            @auth
+                                <h1 class="text-xl font-bold text-gray-800">Hola, {{ Auth::user()->name }} 👋</h1>
+                            @else
+                                <h1 class="text-xl font-bold text-gray-800">Hola, invitado 👋</h1>
+                            @endauth
+                            <p class="text-sm text-gray-600">{{ \Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM') }}</p>
+                        </div>
+                        <div class="bg-white/50 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/50 flex items-center gap-3 self-start sm:self-auto">
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-purple-600 leading-none" id="hora-actual">00:00</div>
+                                <div class="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Hora actual</div>
                             </div>
-                            <div class="hidden sm:block">
+                            <span class="text-2xl">⏱️</span>
+                        </div>
+                    </div>
 
+                    <div class="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-2xl shadow-xl p-6 text-white card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <div class="text-xs uppercase tracking-widest opacity-80 font-bold">Estado del turno</div>
+                                <div class="text-3xl font-black mt-1">No fichado</div>
+                            </div>
+                            <div class="h-14 w-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl backdrop-blur-md rotate-3">
+                                🚪
+                            </div>
+                        </div>
+                        <button class="w-full bg-white text-purple-700 font-black py-4 rounded-xl hover:bg-purple-50 transition-all active:scale-95 shadow-lg uppercase tracking-wide">
+                            Registrar Entrada
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                        <div class="bg-white rounded-2xl shadow-sm p-4 border border-purple-100">
+                            <div class="text-xl mb-1">📊</div>
+                            <div class="text-xl font-black text-gray-800">7.5h</div>
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Hoy</div>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4 border border-purple-100">
+                            <div class="text-xl mb-1">📅</div>
+                            <div class="text-xl font-black text-gray-800">38h</div>
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Semana</div>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4 border border-purple-100">
+                            <div class="text-xl mb-1">🎯</div>
+                            <div class="text-xl font-black text-purple-600">95%</div>
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Objetivo</div>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4 border border-purple-100">
+                            <div class="text-xl mb-1">⚡</div>
+                            <div class="text-xl font-black text-green-600">+2h</div>
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Extra</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-purple-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                            <h2 class="font-bold text-gray-800 uppercase text-sm tracking-wider">Actividad reciente</h2>
+                            <span class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded-md">ÚLTIMOS 3 DÍAS</span>
+                        </div>
+                        <div class="divide-y divide-gray-100">
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-sm text-gray-800">Lunes 19 Ene</div>
+                                        <div class="text-xs text-gray-500">08:00 - 16:30</div>
+                                    </div>
+                                </div>
                                 <div class="text-right">
-                                    <div class="text-2xl font-bold text-purple-600" id="hora-actual">08:23</div>
-                                    <div class="text-xs text-gray-500">Hora actual</div>
+                                    <div class="font-bold text-sm text-gray-800">8.5h</div>
+                                    <div class="text-[10px] font-bold text-green-600">+30 min</div>
                                 </div>
                             </div>
-                        </div>
-                        @else
-                        <div class="flex items-center justify-between w-full max-w-5xl">
-                            <div>
-                                 <h1 class="text-2xl font-bold mb-1">Hola, invitado 👋</h1>
-                            </div>
-                        </div>
-                        @endauth
-                        <!-- Estado actual -->
-                        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl shadow-lg p-6 text-white card-hover w-full max-w-3xl">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <div class="text-sm opacity-90">Estado actual</div>
-                                    <div class="text-2xl font-bold mt-1">No fichado</div>
-                                </div>
-                                <div class="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center text-3xl backdrop-blur-sm">
-                                    ⏱️
-                                </div>
-                            </div>
-                            <button class="w-full bg-white text-purple-600 font-bold py-3 rounded-xl hover:bg-purple-50 transition shadow-md">
-                                FICHAR ENTRADA
-                            </button>
-                        </div>
-                        <!-- Estadísticas del día -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl">
-                            <div class="bg-white rounded-xl shadow p-4 card-hover">
-                                <div class="text-2xl mb-2">📊</div>
-                                <div class="text-2xl font-bold text-gray-800">7.5h</div>
-                                <div class="text-xs text-gray-500">Hoy</div>
-                            </div>
-                            <div class="bg-white rounded-xl shadow p-4 card-hover">
-                                <div class="text-2xl mb-2">📅</div>
-                                <div class="text-2xl font-bold text-gray-800">38h</div>
-                                <div class="text-xs text-gray-500">Esta semana</div>
-                            </div>
-                            <div class="bg-white rounded-xl shadow p-4 card-hover">
-                                <div class="text-2xl mb-2">🎯</div>
-                                <div class="text-2xl font-bold text-purple-600">95%</div>
-                                <div class="text-xs text-gray-500">Cumplimiento</div>
-                            </div>
-                            <div class="bg-white rounded-xl shadow p-4 card-hover">
-                                <div class="text-2xl mb-2">⚡</div>
-                                <div class="text-2xl font-bold text-green-600">+2h</div>
-                                <div class="text-xs text-gray-500">Extra</div>
-                            </div>
-                        </div>
-                        <!-- Últimos fichajes -->
-                        <div class="bg-white rounded-2xl shadow-md p-6 w-full max-w-5xl">
-                            <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-xl font-semibold text-gray-800">Últimos fichajes</h2>
-                                <span class="badge bg-purple-100 text-purple-700">Esta semana</span>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                            <span class="text-green-600 font-bold">↓</span>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-gray-800">Lunes 19 Ene</div>
-                                            <div class="text-sm text-gray-500">08:00 - 16:30</div>
-                                        </div>
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
                                     </div>
-                                    <div class="text-right">
-                                        <div class="font-bold text-gray-800">8.5h</div>
-                                        <div class="text-xs text-green-600">+0.5h</div>
+                                    <div>
+                                        <div class="font-bold text-sm text-gray-800">Viernes 16 Ene</div>
+                                        <div class="text-xs text-gray-500">07:45 - 15:45</div>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                            <span class="text-green-600 font-bold">↓</span>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-gray-800">Viernes 16 Ene</div>
-                                            <div class="text-sm text-gray-500">07:45 - 15:45</div>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-bold text-gray-800">8.0h</div>
-                                        <div class="text-xs text-gray-600">Normal</div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                                            <span class="text-orange-600 font-bold">↓</span>
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-gray-800">Jueves 15 Ene</div>
-                                            <div class="text-sm text-gray-500">08:15 - 16:00</div>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-bold text-gray-800">7.75h</div>
-                                        <div class="text-xs text-orange-600">-0.25h</div>
-                                    </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-sm text-gray-800">8.0h</div>
+                                    <div class="text-[10px] font-bold text-gray-400">COMPLETO</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </main>
-                <!-- Bottom nav móvil -->
-                <nav class="md:hidden border-t bg-white shadow-lg">
-                    <div class="grid grid-cols-4 text-center text-xs font-semibold">
-                        <a href="{{ url('/perfil') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('perfil*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">👤</span>
-                            <span>Perfil</span>
-                        </a>
-                        <a href="{{ route('normas.index') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('normas*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">📋</span>
-                            <span>Normas</span>
-                        </a>
-                        <a href="{{ url('/fichaje') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('fichaje*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">⏱️</span>
-                            <span>Fichaje</span>
-                        </a>
-                        <a href="{{ url('/horas') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('horas*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">📊</span>
-                            <span>Horas</span>
-                        </a>
-                    </div>
-                </nav>
-            </div>
+                </div>
+            </main>
+
+            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 z-20">
+                <div class="grid grid-cols-5 h-16">
+                    <a href="{{ url('/perfil') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('perfil*') ? 'text-purple-600' : 'text-gray-400' }}">
+                        <span class="text-xl">👤</span>
+                        <span class="text-[10px] font-bold">Perfil</span>
+                    </a>
+                    <a href="{{ route('normas.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('normas*') ? 'text-purple-600' : 'text-gray-400' }}">
+                        <span class="text-xl">📋</span>
+                        <span class="text-[10px] font-bold">Normas</span>
+                    </a>
+                    <a href="{{ url('/incidencias') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('incidencias*') ? 'text-purple-600' : 'text-gray-400' }}">
+                        <span class="text-xl">⚠️</span>
+                        <span class="text-[10px] font-bold">Incidencias</span>
+                    </a>
+                    <a href="{{ url('/fichaje') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('fichaje*') ? 'text-purple-600' : 'text-gray-400' }}">
+                        <span class="text-xl">⏱️</span>
+                        <span class="text-[10px] font-bold">Fichar</span>
+                    </a>
+                    <a href="{{ url('/horas') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('horas*') ? 'text-purple-600' : 'text-gray-400' }}">
+                        <span class="text-xl">📊</span>
+                        <span class="text-[10px] font-bold">Horas</span>
+                    </a>
+                </div>
+            </nav>
+
         </div>
     </div>
+
     <script>
-        // Actualizar hora en tiempo real
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
             const timeElement = document.getElementById('hora-actual');
-            if (timeElement) {
-                timeElement.textContent = timeString;
-            }
-            // Actualizar fecha
-            const fechaElement = document.getElementById('fecha-hoy');
-            if (fechaElement) {
-                const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                fechaElement.textContent = now.toLocaleDateString('es-ES', opciones);
-            }
+            if (timeElement) timeElement.textContent = timeString;
         }
         setInterval(updateTime, 1000);
         updateTime();

@@ -48,21 +48,21 @@
         <div class="w-full">
             <div class="relative overflow-hidden rounded-none bg-white shadow-2xl ring-1 ring-black/10 w-full h-full min-h-screen flex flex-col">
                 <!-- Header y nav -->
-                <header class="h-14 bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4">
+                <header class="h-14 flex-none bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4 z-10">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/logofitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
-                        <div class="hidden sm:block">
+                        <img src="{{ asset('images/fitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
+                        <div class="hidden xs:block">
                             <div class="font-bold text-sm">Fitxategi</div>
                             <div class="text-xs text-gray-400">Control horario</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="hidden sm:flex rounded-full">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="h-8 w-8 rounded-full"><img src="images/euskalherria.png"></button>
-                            <button class="h-8 w-8 rounded-full"><img src="images/españa.png"></button>
-                        </div>
+                    <div class="flex items-center gap-2">
+                        <button class="h-8 w-8 rounded-full overflow-hidden hover:scale-110 transition shadow-sm border border-white/10">
+                            <img src="{{ asset('images/euskalherria.png') }}" class="w-full h-full object-cover">
+                        </button>
+                        <button class="h-8 w-8 rounded-full overflow-hidden hover:scale-110 transition shadow-sm border border-white/10">
+                            <img src="{{ asset('images/españa.png') }}" class="w-full h-full object-cover">
+                        </button>
                     </div>
                 </header>
                 <!-- Nav desktop -->
@@ -141,30 +141,30 @@
                     </div>
                 </main>
                 <!-- Bottom nav móvil -->
-                <nav class="md:hidden border-t bg-white shadow-lg">
-                    <div class="grid grid-cols-4 text-center text-xs font-semibold">
-                        <a href="{{ url('/perfil') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('perfil*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">👤</span>
-                            <span>Perfil</span>
+                <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 z-20">
+                    <div class="grid grid-cols-5 h-16">
+                        <a href="{{ url('/perfil') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('perfil*') ? 'text-purple-600' : 'text-gray-400' }}">
+                            <span class="text-xl">👤</span>
+                            <span class="text-[10px] font-bold">Perfil</span>
                         </a>
-                        <a href="{{ route('normas.index') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('normas*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">📋</span>
-                            <span>Normas</span>
+                        <a href="{{ route('normas.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('normas*') ? 'text-purple-600' : 'text-gray-400' }}">
+                            <span class="text-xl">📋</span>
+                            <span class="text-[10px] font-bold">Normas</span>
                         </a>
-                        <a href="{{ url('/incidencias') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('incidencias*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">⏱️</span>
-                            <span>Incidencias</span>
+                        <a href="{{ url('/incidencias') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('incidencias*') ? 'text-purple-600' : 'text-gray-400' }}">
+                            <span class="text-xl">⚠️</span>
+                            <span class="text-[10px] font-bold">Incidencias</span>
                         </a>
-                        <a href="{{ url('/fichaje') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('fichaje*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">⏱️</span>
-                            <span>Fichar</span>
+                        <a href="{{ url('/fichaje') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('fichaje*') ? 'text-purple-600' : 'text-gray-400' }}">
+                            <span class="text-xl">⏱️</span>
+                            <span class="text-[10px] font-bold">Fichar</span>
                         </a>
-                        <a href="{{ url('/horas') }}" class="py-3 flex flex-col items-center gap-1 {{ request()->is('horas*') ? 'text-purple-600 bg-purple-50 nav-active' : '' }} hover:bg-gray-50 transition">
-                            <span class="text-lg">📊</span>
-                            <span>Horas</span>
+                        <a href="{{ url('/horas') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->is('horas*') ? 'text-purple-600' : 'text-gray-400' }}">
+                            <span class="text-xl">📊</span>
+                            <span class="text-[10px] font-bold">Horas</span>
                         </a>
                     </div>
-                </nav>
+            </nav>
             </div>
         </div>
     </div>

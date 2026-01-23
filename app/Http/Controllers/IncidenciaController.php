@@ -30,6 +30,6 @@ class IncidenciaController extends Controller {
         $doc->save();
     }
 
-    return back()->with('status', '¡Éxito! Se ha guardado correctamente.');
+    return back()->with('status', 'La incidencia se a registrado correctamente.');
 }
 }
