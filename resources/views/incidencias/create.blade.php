@@ -45,7 +45,8 @@
     <div class="flex-1 flex flex-col w-full">
         <header class="h-14 flex-none bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4 z-10">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logofitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
+                <img src="{{ asset('images/fitxategi.png') }}" alt="Logo Fitxategi" class="h-9 w-9 rounded-full shadow-lg object-contain bg-white">
+
                 <div class="hidden xs:block">
                     <div class="font-bold text-sm text-white">Fitxategi</div>
                     <div class="text-xs text-gray-400">Control horario</div>
