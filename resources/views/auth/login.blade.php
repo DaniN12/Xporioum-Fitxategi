@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión - Fitxategi</title>
+    <title>Fitxategi - Iniciar sesión</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .diagonal-pattern {
@@ -13,36 +13,43 @@
         .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
     </style>
 </head>
-<body class="min-h-screen w-screen h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex flex-col">
-    <!-- Fondo con patrón -->
-    <div class="fixed inset-0 -z-10 bg-[#FFFFFF]">
+<body class="min-h-screen bg-slate-100 flex items-center justify-center">
+    <div class="fixed inset-0 -z-10 bg-[#7f95ff]">
         <div class="absolute inset-0 opacity-20 diagonal-pattern"></div>
     </div>
-    <!-- Contenedor principal FULL SCREEN -->
-    <div class="flex-1 flex flex-col items-stretch justify-stretch p-0 w-full h-full">
-        <div class="w-full h-full flex flex-col items-center justify-center">
-            <div class="relative overflow-hidden rounded-none bg-white shadow-2xl ring-1 ring-black/10 w-full h-full min-h-screen flex flex-col items-center justify-center">
-                <div class="flex flex-col items-center mb-6">
-                   <img src="{{ asset('images/logofitxategi.png') }}" alt="Logo Fitxategi" class="h-16 w-16 rounded-full shadow-lg mb-2 bg-white object-contain">
-                    <h1 class="text-2xl font-bold text-gray-800">Iniciar sesión</h1>
-                    <p class="text-gray-500 text-sm">Accede a tu cuenta de Fitxategi</p>
+    <div class="w-full max-w-md mx-auto p-6 animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 flex flex-col items-center">
+            <img src="/images/logo fitxategi.png" alt="Logo Fitxategi" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white object-contain">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Bienvenido a Fitxategi</h1>
+            <p class="text-gray-500 mb-6 text-center">Control horario profesional y sencillo</p>
+            <!-- Session Status -->
+            <x-auth-session-status class="mb-4" :status="session('status')" />
+            <form method="POST" action="{{ route('login') }}" class="w-full space-y-4">
+                @csrf
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                    <input id="email" class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
-                <form method="POST" action="{{ route('login') }}" class="space-y-5 w-full max-w-sm">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                        <input type="email" name="email" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
-                        <input type="password" name="password" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400">
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold py-3 rounded-xl hover:shadow-lg transition">Entrar</button>
-                </form>
-                <div class="text-center mt-6 text-sm text-gray-500">
-                    ¿No tienes cuenta? <a href="{{ route('register') }}" class="text-purple-600 font-bold hover:underline">Regístrate</a>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <input id="password" class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50" type="password" name="password" required autocomplete="current-password" />
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
-            </div>
+                <div class="flex items-center justify-between">
+                    <label for="remember_me" class="inline-flex items-center">
+                        <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-purple-600 shadow-sm focus:ring-purple-500" name="remember">
+                        <span class="ml-2 text-sm text-gray-600">Recuérdame</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a class="text-sm text-purple-600 hover:underline" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                    @endif
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition">Iniciar sesión</button>
+            </form>
+        </div>
+        <div class="text-center text-xs text-gray-400 mt-6">
+            <p>Fitxategi &copy; 2026</p>
         </div>
     </div>
 </body>

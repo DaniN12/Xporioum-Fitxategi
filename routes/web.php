@@ -4,6 +4,57 @@ use App\Http\Controllers\NormaController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\HorasUsuarioController;
+use App\Http\Controllers\ProfileController;
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS CON LOGIN
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+
+    // HORAS
+    Route::get('/horas', [HorasUsuarioController::class, 'index'])->name('horas');
+
+    // PERFIL
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/password', [ProfileController::class, 'password'])->name('password.update');
+
+    // DASHBOARD
+    Route::get('/dashboard', function () {
+        return redirect()->route('horas');
+    })->name('dashboard');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| CAMBIO DE IDIOMA (NO NECESITA LOGIN)
+|--------------------------------------------------------------------------
+*/
+Route::get('/idioma/{idioma}', function ($idioma) {
+
+    if (!in_array($idioma, ['es', 'eu'])) {
+        abort(400);
+    }
+
+    Session::put('locale', $idioma);
+    App::setLocale($idioma);
+
+    return redirect()->back();
+
+})->name('idioma.cambiar');
+
+require __DIR__.'/auth.php';
 // Esta es la ruta que te falta y causa el error rojo
 Route::post('/incidencias', [IncidenciaController::class, 'store'])->name('incidencias.store');
 
@@ -30,17 +81,6 @@ Route::get('/horas', function () {
     return view('horas.index');
 })->name('horas.index');
 
-// Login
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-
-// Register
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-Route::post('/register', [AuthController::class, 'register']);
 
 // Perfil
 Route::get('/perfil', function () {
@@ -51,3 +91,4 @@ Route::get('/perfil', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 ?>
+
