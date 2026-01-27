@@ -19,9 +19,9 @@
     </div>
     <div class="w-full max-w-md mx-auto p-6 animate-fade-in">
         <div class="bg-white rounded-3xl shadow-2xl p-8 flex flex-col items-center">
-            <img src="/images/logo fitxategi.png" alt="Logo Fitxategi" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white object-contain">
+            <img src="{{ asset('images/fitxategi.png') }}" alt="Logo Fitxategi" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white object-contain">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Bienvenido a Fitxategi</h1>
-            <p class="text-gray-500 mb-6 text-center">Control horario profesional y sencillo</p>
+            <p class="text-gray-500  text-center">¿No tienes cuenta? <a href="{{ route('register') }}" class="text-purple-600 hover:underline">Regristrarme</a></p>
             <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
             <form method="POST" action="{{ route('login') }}" class="w-full space-y-4">
@@ -48,6 +48,9 @@
                 <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition">Iniciar sesión</button>
             </form>
         </div>
+        <div class="mt-6 text-sm text-gray-500">
+
+            </div>
         <div class="text-center text-xs text-gray-400 mt-6">
             <p>Fitxategi &copy; 2026</p>
         </div>

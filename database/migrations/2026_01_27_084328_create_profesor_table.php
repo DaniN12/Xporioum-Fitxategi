@@ -10,19 +10,22 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void{
-    Schema::create('incidencias', function (Blueprint $table) {
-        $table->id();
-        $table->date('fecha');
-        $table->text('motivo');
-        $table->timestamps();
+    Schema::create('profesor', function (Blueprint $table) {
+        $table->id('id_profesor');
+        $table->unsignedBigInteger('usuario_id')->unique();
+
+        $table->foreign('usuario_id')
+            ->references('id_usuario')
+            ->on('usuario');
     });
 }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('incidencias');
+        Schema::dropIfExists('profesor');
     }
 };

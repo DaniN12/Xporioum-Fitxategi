@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\HorasUsuarioController;
 use App\Http\Controllers\ProfileController;
 
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -84,8 +85,8 @@ Route::get('/horas', function () {
 
 // Perfil
 Route::get('/perfil', function () {
-    return view('perfil.index');
-})->name('perfil.index');
+    return "Bienvenido, " . Auth::user()->name . ". Tu registro ha funcionado correctamente.";
+})->middleware('auth');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

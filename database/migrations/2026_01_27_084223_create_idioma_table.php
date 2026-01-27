@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
-    }
+    public function up(): void{
+    Schema::create('idioma', function (Blueprint $table) {
+        $table->id('id_idioma');
+        $table->string('nombre', 50);
+        $table->string('codigo', 5)->unique();
+    });
+}
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('idioma');
     }
 };

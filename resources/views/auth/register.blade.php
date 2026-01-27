@@ -19,7 +19,7 @@
     </div>
     <div class="w-full max-w-md mx-auto p-6 animate-fade-in">
         <div class="bg-white rounded-3xl shadow-2xl p-8 flex flex-col items-center">
-            <img src="/images/logo fitxategi.png" alt="Logo Fitxategi" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white object-contain">
+            <img src="{{ asset('images/fitxategi.png') }}" alt="Logo Fitxategi" class="w-24 h-24 mb-4 rounded-full shadow-lg bg-white object-contain">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Crear cuenta en Fitxategi</h1>
             <p class="text-gray-500 mb-6 text-center">Regístrate para acceder al control horario</p>
             <form method="POST" action="{{ route('register') }}" class="w-full space-y-4">
