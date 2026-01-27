@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Attendance;
+use App\Models\Absence;
+use App\Models\Company;
 
 class User extends Authenticatable
 {
@@ -20,9 +23,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'dni',
+        'company',
         'password',
-        'role_id',
+        'role',
+        'company_id',
     ];
+
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -47,17 +55,31 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
+    public function isTeacher()
     {
-        return $this->belongsTo(Role::class);
+        return $this->role === 'teacher';
     }
 
-    public function isAdmin()
+    public function isStudent()
     {
-        if ($this->role->name == 'admin') {
-            return true;
-        }
+        return $this->role === 'student';
+    }
 
-        return false;
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function absences()
+    {
+        return $this->hasMany(Absence::class);
+    }
+
+
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }
