@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitxategi - Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .diagonal-pattern {
+            background-image: repeating-linear-gradient(
+                135deg, 
+                rgba(255,255,255,.35) 0 2px, 
+                transparent 2px 32px
+            );
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .nav-active {
+            position: relative;
+        }
+        
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-100">
+    <!-- Fondo con patrón -->
+    <div class="fixed inset-0 -z-10 bg-[#7f95ff]">
+        <div class="absolute inset-0 opacity-20 diagonal-pattern"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-sm sm:max-w-md md:max-w-4xl">
+            <div class="relative overflow-hidden rounded-[28px] bg-white shadow-2xl ring-1 ring-black/10">
+                
+                <!-- Header -->
+                <header class="h-14 bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-xl shadow-lg">
+                            🐰
+                        </div>
+                        <div class="hidden sm:block">
+                            <div class="font-bold text-sm">Fitxategi</div>
+                            <div class="text-xs text-gray-400">Control horario</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="hidden sm:flex items-center gap-2 text-xs bg-white/10 rounded-full px-3 py-1">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            <span>En línea</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center">
+                                🇪🇸
+                            </button>
+                            <button class="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center">
+                                🟥⬜🟩
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Nav desktop -->
+                <nav class="hidden md:flex items-center justify-center gap-10 bg-gradient-to-r from-[#d7a6ff] to-[#e5b8ff] py-3 font-bold text-black shadow-sm">
+                    <a class="nav-active hover:text-purple-800 cursor-pointer transition">Perfil</a>
+                    <a class="hover:text-purple-800 cursor-pointer transition">Normas</a>
+                    <a class="hover:text-purple-800 cursor-pointer transition">Fichar</a>
+                    <a class="hover:text-purple-800 cursor-pointer transition">Tus horas</a>
+                </nav>
+
+                <!-- Contenido principal -->
+                <main class="bg-[#f2dcff] p-6 md:p-10 min-h-[520px]">
+                    <div class="max-w-3xl mx-auto space-y-6 animate-fade-in">
+                        
+                        <!-- Cabecera de perfil -->
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl shadow-lg p-6 text-white">
+                            <div class="flex items-start gap-6">
+                                <div class="relative">
+                                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-lg">
+                                        👩‍💼
+                                    </div>
+                                    <button class="absolute -bottom-1 -right-1 w-8 h-8 bg-white text-purple-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition">
+                                        ✏️
+                                    </button>
+                                </div>
+                                <div class="flex-1">
+                                    <h1 class="text-2xl font-bold mb-1">María García López</h1>
+                                    <div class="flex flex-wrap gap-2 text-sm opacity-90">
+                                        <span class="flex items-center gap-1">
+                                            <span>💼</span> Desarrolladora Senior
+                                        </span>
+                                        <span class="opacity-50">•</span>
+                                        <span class="flex items-center gap-1">
+                                            <span>🏢</span> IT Department
+                                        </span>
+                                    </div>
+                                    <div class="mt-3 flex gap-2">
+                                        <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs">ID: EMP-2024-1234</span>
+                                        <span class="bg-green-500/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">Activo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información personal -->
+                        <div class="bg-white rounded-2xl shadow-md p-6">
+                            <div class="flex items-center justify-between mb-5">
+                                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                    <span>📋</span> Información personal
+                                </h2>
+                                <button class="text-purple-600 hover:text-purple-800 font-semibold text-sm transition">
+                                    Editar
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-500 mb-1">Email corporativo</div>
+                                    <div class="font-semibold text-gray-800">maria.garcia@empresa.com</div>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-500 mb-1">Teléfono</div>
+                                    <div class="font-semibold text-gray-800">+34 612 345 678</div>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-500 mb-1">Fecha de alta</div>
+                                    <div class="font-semibold text-gray-800">15 de marzo, 2022</div>
+                                </div>
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-500 mb-1">Tipo de contrato</div>
+                                    <div class="font-semibold text-gray-800">Indefinido - Jornada completa</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Horario asignado -->
+                        <div class="bg-white rounded-2xl shadow-md p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
+                                <span>⏰</span> Horario asignado
+                            </h2>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                                    <div>
+                                        <div class="font-semibold text-gray-800">Jornada laboral</div>
+                                        <div class="text-sm text-gray-600">Lunes a Viernes</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-purple-600">8 horas</div>
+                                        <div class="text-xs text-gray-500">40h semanales</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <div class="font-semibold text-gray-800">Horario flexible</div>
+                                        <div class="text-sm text-gray-600">Entrada</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-gray-800">07:00 - 09:00</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <div class="font-semibold text-gray-800">Descanso</div>
+                                        <div class="text-sm text-gray-600">Obligatorio tras 6h</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-gray-800">30 minutos</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estadísticas del empleado -->
+                        <div class="bg-white rounded-2xl shadow-md p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
+                                <span>📊</span> Tu desempeño
+                            </h2>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                                    <div class="text-3xl mb-2">🎯</div>
+                                    <div class="text-2xl font-bold text-blue-600">96%</div>
+                                    <div class="text-xs text-gray-600 mt-1">Puntualidad</div>
+                                </div>
+                                <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+                                    <div class="text-3xl mb-2">✨</div>
+                                    <div class="text-2xl font-bold text-green-600">12</div>
+                                    <div class="text-xs text-gray-600 mt-1">Racha (días)</div>
+                                </div>
+                                <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                                    <div class="text-3xl mb-2">⏱️</div>
+                                    <div class="text-2xl font-bold text-purple-600">152h</div>
+                                    <div class="text-xs text-gray-600 mt-1">Este mes</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opciones adicionales -->
+                        <div class="bg-white rounded-2xl shadow-md p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <span>⚙️</span> Configuración
+                            </h2>
+                            <div class="space-y-2">
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xl">🔔</span>
+                                        <div class="text-left">
+                                            <div class="font-semibold text-gray-800">Notificaciones</div>
+                                            <div class="text-xs text-gray-500">Recordatorios de fichaje</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xl">🔒</span>
+                                        <div class="text-left">
+                                            <div class="font-semibold text-gray-800">Privacidad y seguridad</div>
+                                            <div class="text-xs text-gray-500">Contraseña y acceso</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xl">🌍</span>
+                                        <div class="text-left">
+                                            <div class="font-semibold text-gray-800">Idioma</div>
+                                            <div class="text-xs text-gray-500">Español (España)</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xl">📱</span>
+                                        <div class="text-left">
+                                            <div class="font-semibold text-gray-800">Dispositivos vinculados</div>
+                                            <div class="text-xs text-gray-500">2 dispositivos activos</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botón de cerrar sesión -->
+                        <button class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-4 rounded-xl transition flex items-center justify-center gap-2">
+                            <span class="text-xl">🚪</span>
+                            Cerrar sesión
+                        </button>
+
+                        <!-- Info de versión -->
+                        <div class="text-center text-xs text-gray-400">
+                            <p>Fitxategi v2.1.0</p>
+                            <p class="mt-1">© 2026 Tu Empresa - Todos los derechos reservados</p>
+                        </div>
+
+                    </div>
+                </main>
+
+                <!-- Bottom nav móvil -->
+                <nav class="md:hidden border-t bg-white shadow-lg">
+                    <div class="grid grid-cols-4 text-center text-xs font-semibold">
+                        <a href="#" class="py-3 flex flex-col items-center gap-1 text-purple-600 bg-purple-50 transition">
+                            <span class="text-lg">👤</span>
+                            <span>Perfil</span>
+                        </a>
+                        <a href="#" class="py-3 flex flex-col items-center gap-1 hover:bg-gray-50 transition">
+                            <span class="text-lg">📋</span>
+                            <span>Normas</span>
+                        </a>
+                        <a href="#" class="py-3 flex flex-col items-center gap-1 hover:bg-gray-50 transition">
+                            <span class="text-lg">⏱️</span>
+                            <span>Fichar</span>
+                        </a>
+                        <a href="#" class="py-3 flex flex-col items-center gap-1 hover:bg-gray-50 transition">
+                            <span class="text-lg">📊</span>
+                            <span>Horas</span>
+                        </a>
+                    </div>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
