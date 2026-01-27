@@ -1,103 +1,92 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesión - Fitxategi</title>
+@extends('layout.masterpage')
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+@endsection
 
-        .container {
-            background: white;
-            width: 420px;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+@section('content')
 
-        h1 {
-            color: #000000;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        h2 {
-            color: #000000;
-            margin-bottom: 30px;
-            font-size: 18px;
-        }
-
-        label {
-            display: block;
-            text-align: left;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #000000;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 18px;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #000000;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #ffffff;
-        }
-
-        button:hover {
-            background: #ffffff;
-            color: #000000;
-            border: 2px solid #000000;
-        }
-    </style>
-</head>
-
-<body class="">
-        <div class="">
-            <div class="logo-img">
-                    <img class="w-100" src="img/logo fitxategi.png" alt="logo">
-            </div>
-        </div>
-
-
+<div class="login-wrapper">
     <div class="container">
-    <h1>Bienvenido a Fitxategi</h1>
-    <h2>Inicie sesión</h2>
+        <div class="row justify-content-center align-items-center">
 
-    <form>
-        <label>Email:</label>
-        <input type="email" placeholder="Introduce tu email">
+            {{-- COLUMNA IZQUIERDA: LOGO --}}
+            <div class="col-md-6 d-flex justify-content-center">
+                <div class="logo-left">
+                    <img src="{{ asset('img/logo-fitxategi.png') }}" alt="Logo Fitxategi">
+                </div>
+            </div>
 
-        <label>Contraseña:</label>
-        <input type="password" placeholder="Introduce tu contraseña">
+            {{-- COLUMNA DERECHA: FORMULARIO --}}
+            <div class="col-md-6">
+                <div class="card login-card">
 
-        <button type="submit">Entrar</button>
-    </form>
+                    <div class="card-header-custom text-center">
+                        <h4>Bienvenido a Fitxategi</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        {{-- ERRORES DE LOGIN --}}
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                @foreach ($errors->all() as $error)
+                                    <div>{{ $error }}</div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+
+                            {{-- EMAIL --}}
+                            <div class="mb-3 input-icon-wrapper">
+                                <label class="col-form-label">Email</label>
+                                <input type="email"
+                                       name="email"
+                                       class="form-control"
+                                         value="{{ old('email') }}"
+                                       required>
+
+                                <img src="{{ asset('img/correo.png') }}"
+                                     class="input-icon"
+                                     alt="Icono correo">
+                            </div>
+
+                            {{-- PASSWORD --}}
+                            <div class="mb-3 input-icon-wrapper">
+                                <label class="col-form-label">Contraseña</label>
+
+                                <input type="password"
+                                       id="password"
+                                       name="contrasena"
+                                       class="form-control"
+                                       required>
+
+                                <img src="{{ asset('img/ojo.png') }}"
+                                     alt="Mostrar contraseña"
+                                     id="togglePassword"
+                                     class="input-icon"
+                                     data-ojo="{{ asset('img/ojo.png') }}"
+                                     data-ojo-cerrado="{{ asset('img/ojo-cerrado.png') }}">
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary-custom">Entrar</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
+@endsection
 
-
-</body>
-</html>
+@section('scripts')
+<script src="{{ asset('js/login.js') }}"></script>
+@endsection
