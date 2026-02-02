@@ -1,138 +1,167 @@
-<x-app-layout>
+@extends('layouts.teacher')
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
-        }
+@section('content')
 
-        .full-page {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 3rem 2rem;
-        }
+<div class="w-full">
 
-        .absences-card {
-            width: 100%;
-            max-width: 1200px;
-            background: #ffffff;
-            border-radius: 26px;
-            padding: 3.5rem;
-            box-shadow: 0 25px 50px rgba(236, 72, 153, 0.18);
-        }
+    {{-- Cabecera --}}
+    <div class="mb-6 flex items-start justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-800">Ausencias</h1>
+            <p class="text-sm text-gray-500">Gestiona justificantes y solicitudes de ausencia.</p>
+        </div>
 
-        .page-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #be185d;
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
+        {{-- Botón PDF --}}
+        <button
+            onclick="descargarAbsencesPDF()"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold
+                   text-white bg-indigo-600 hover:bg-indigo-700 transition shadow">
+            <i class="bi bi-file-earmark-pdf"></i>
+            Descargar PDF
+        </button>
+    </div>
 
-        .absences-table {
-            width: 100%;
-            border-radius: 20px;
-            overflow: hidden;
-        }
+    {{-- Alertas --}}
+    @if(session('success'))
+        <div class="mb-4 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-green-700 font-semibold">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        .absences-table thead {
-            background-color: #fce7f3;
-        }
+    @if(session('error'))
+        <div class="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-red-700 font-semibold">
+            {{ session('error') }}
+        </div>
+    @endif
 
-        .absences-table thead th {
-            color: #9d174d;
-            font-weight: 700;
-            padding: 1.5rem;
-        }
+    {{-- Card --}}
+    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
 
-        .absences-table tbody td {
-            padding: 1.4rem 1.5rem;
-            vertical-align: middle;
-        }
-
-        .absences-table tbody tr:nth-of-type(odd) {
-            background-color: #fdf2f8;
-        }
-
-        .absences-table tbody tr:hover {
-            background-color: #fbcfe8;
-        }
-
-        .download-link {
-            background-color: #fbcfe8;
-            color: #9d174d;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .download-link:hover {
-            background-color: #f9a8d4;
-            color: #831843;
-        }
-
-        .no-file {
-            color: #9ca3af;
-            font-style: italic;
-        }
-    </style>
-
-    <div class="full-page">
-        <div class="absences-card">
-
-            <h1 class="page-title">
-                Ausencias
-            </h1>
-
-            <table class="absences-table table table-striped">
-                <thead>
-                    <tr>
-                        <th>Alumno</th>
-                        <th>Fecha</th>
-                        <th>Motivo</th>
-                        <th>Justificante</th>
+        <div class="overflow-x-auto">
+            <table id="tabla-absences-pdf" class="min-w-full text-left">
+                <thead class="bg-slate-50">
+                    <tr class="text-slate-700 text-sm uppercase tracking-wide">
+                        <th class="px-6 py-4 font-bold">Alumno</th>
+                        <th class="px-6 py-4 font-bold">Fecha</th>
+                        <th class="px-6 py-4 font-bold">Motivo</th>
+                        <th class="px-6 py-4 font-bold">Adjunto</th>
+                        <th class="px-6 py-4 font-bold">Estado</th>
+                        <th class="px-6 py-4 font-bold text-center">Acciones</th>
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-100">
                     @forelse($absences as $absence)
-                        <tr>
-                            <td class="fw-semibold">
-                                {{ $absence->user->name }}
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-6 py-5">
+                                <div class="font-semibold text-slate-800">
+                                    {{ $absence->alumno_nombre ?? 'Alumno' }}
+                                </div>
+
+                                @if(!empty($absence->alumno_email) || !empty($absence->alumno_dni))
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        {{ $absence->alumno_email ?? '' }}
+                                        @if(!empty($absence->alumno_email) && !empty($absence->alumno_dni))
+                                            ·
+                                        @endif
+                                        {{ $absence->alumno_dni ?? '' }}
+                                    </div>
+                                @endif
                             </td>
-                            <td>
-                                {{ $absence->date }}
+
+                            <td class="px-6 py-5 font-semibold text-slate-700">
+                                {{ \Carbon\Carbon::parse($absence->fecha)->format('d/m/Y') }}
                             </td>
-                            <td>
-                                {{ $absence->reason }}
+
+                            <td class="px-6 py-5 text-slate-700">
+                                {{ $absence->motivo }}
                             </td>
-                            <td>
-                                @if($absence->file_path)
-                                    <a href="{{ asset('storage/' . $absence->file_path) }}"
-                                       class="download-link"
-                                       target="_blank">
-                                        Descargar
-                                    </a>
+
+                            <td class="px-6 py-5">
+                                @if(!empty($absence->adjunto_path))
+                                    <span class="text-slate-700 font-semibold">Sí</span>
                                 @else
-                                    <span class="no-file">
-                                        Sin archivo
+                                    <span class="text-gray-400 italic text-sm">No</span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-5">
+                                @if($absence->estado === 'aceptada')
+                                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold text-xs">
+                                        Aceptada
                                     </span>
+                                @elseif($absence->estado === 'rechazada')
+                                    <span class="px-3 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">
+                                        Rechazada
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-bold text-xs">
+                                        Pendiente
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-5 text-center">
+                                @if($absence->estado === 'pendiente')
+                                    Pendiente
+                                @else
+                                    —
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">
+                            <td colspan="6" class="px-6 py-10 text-center text-gray-400 font-semibold">
                                 No hay ausencias registradas
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
-
         </div>
-    </div>
 
-</x-app-layout>
+    </div>
+</div>
+
+{{-- jsPDF + AutoTable --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+function descargarAbsencesPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4');
+
+    doc.setFontSize(16);
+    doc.text('Listado de ausencias', 14, 15);
+
+    doc.autoTable({
+        html: '#tabla-absences-pdf',
+        startY: 22,
+        theme: 'grid',
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        headStyles: {
+            fillColor: [51, 65, 85], // slate-700
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+            fillColor: [248, 250, 252]
+        },
+        margin: { left: 14, right: 14 },
+        didParseCell: function (data) {
+            // Evitamos botones/acciones visuales raras en PDF
+            if (data.column.index === 5) {
+                data.cell.text = ['—'];
+            }
+        }
+    });
+
+    doc.save('ausencias.pdf');
+}
+</script>
+
+@endsection

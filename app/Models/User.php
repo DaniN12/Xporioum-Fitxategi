@@ -2,84 +2,57 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Attendance;
-use App\Models\Absence;
-use App\Models\Company;
+use App\Models\Fichaje;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // ✅ Tu tabla real
+    protected $table = 'usuario';
+
+    // ✅ Tu clave primaria real
+    protected $primaryKey = 'id_usuario';
+
+    // ✅ No tienes created_at / updated_at
+    public $timestamps = false;
+
+    // ✅ Campos reales de tu tabla
     protected $fillable = [
-        'name',
         'email',
+        'contrasena',
+        'nombre',
         'dni',
-        'company',
-        'password',
-        'role',
-        'company_id',
+        'idioma_id',
+        'activo',
     ];
 
-
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    // ✅ Ocultar el password real
     protected $hidden = [
-        'password',
+        'contrasena',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // ✅ Laravel debe usar "contrasena" como password
+    public function getAuthPassword()
+    {
+        return $this->contrasena;
+    }
+
+    // (Opcional) Casts si quieres, pero NO uses 'password' => 'hashed'
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // no tienes email_verified_at en la tabla según tu captura
         ];
     }
 
-    public function isTeacher()
+    public function fichajes()
     {
-        return $this->role === 'teacher';
-    }
-
-    public function isStudent()
-    {
-        return $this->role === 'student';
-    }
-
-
-    public function attendances()
-    {
-        return $this->hasMany(Attendance::class);
-    }
-
-    public function absences()
-    {
-        return $this->hasMany(Absence::class);
-    }
-
-
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
+        // ⚠️ Ajusta estas claves si tu tabla fichaje apunta a id_usuario
+        return $this->hasMany(Fichaje::class, 'alumno_id', 'id_usuario');
     }
 }

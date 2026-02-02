@@ -1,47 +1,92 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layout.masterpage')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+@endsection
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+@section('content')
+
+<div class="login-wrapper">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+
+            {{-- COLUMNA IZQUIERDA: LOGO --}}
+            <div class="col-md-6 d-flex justify-content-center">
+                <div class="logo-left">
+                    <img src="{{ asset('img/logo-fitxategi.png') }}" alt="Logo Fitxategi">
+                </div>
+            </div>
+
+            {{-- COLUMNA DERECHA: FORMULARIO --}}
+            <div class="col-md-6">
+                <div class="card login-card">
+
+                    <div class="card-header-custom text-center">
+                        <h4>Bienvenido a Fitxategi</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        {{-- ERRORES DE LOGIN --}}
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                @foreach ($errors->all() as $error)
+                                    <div>{{ $error }}</div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+
+                            {{-- EMAIL --}}
+                            <div class="mb-3 input-icon-wrapper">
+                                <label class="col-form-label">Email</label>
+                                <input type="email"
+                                       name="email"
+                                       class="form-control"
+                                         value="{{ old('email') }}"
+                                       required>
+
+                                <img src="{{ asset('img/correo.png') }}"
+                                     class="input-icon"
+                                     alt="Icono correo">
+                            </div>
+
+                            {{-- PASSWORD --}}
+                            <div class="mb-3 input-icon-wrapper">
+                                <label class="col-form-label">Contraseña</label>
+
+                                <input type="password"
+                                       id="password"
+                                       name="contrasena"
+                                       class="form-control"
+                                       required>
+
+                                <img src="{{ asset('img/ojo.png') }}"
+                                     alt="Mostrar contraseña"
+                                     id="togglePassword"
+                                     class="input-icon"
+                                     data-ojo="{{ asset('img/ojo.png') }}"
+                                     data-ojo-cerrado="{{ asset('img/ojo-cerrado.png') }}">
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary-custom">Entrar</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
+    </div>
+</div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+@endsection
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+@section('scripts')
+<script src="{{ asset('js/login.js') }}"></script>
+@endsection

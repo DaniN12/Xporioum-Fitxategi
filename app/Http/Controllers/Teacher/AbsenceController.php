@@ -1,42 +1,52 @@
 <?php
+
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Models\Absence;
+use Illuminate\Support\Facades\DB;
 
 class AbsenceController extends Controller
 {
+    // 📋 LISTAR INCIDENCIAS PARA EL PROFESOR
     public function index()
     {
-        $absences = Absence::with('user')
-            ->latest()
+        $absences = DB::table('incidencia as i')
+            ->join('alumno as a', 'a.id_alumno', '=', 'i.alumno_id')
+            ->join('usuario as u', 'u.id_usuario', '=', 'a.usuario_id')
+            ->select(
+                'i.id_incidencia',
+                'i.fecha',
+                'i.motivo',
+                'i.estado',
+                'i.adjunto_path',
+                'i.adjunto_nombre',
+                'u.nombre as alumno_nombre',
+                'u.email as alumno_email',
+                'u.dni as alumno_dni'
+            )
+            ->orderBy('i.fecha', 'desc')
             ->get();
 
         return view('teacher.absences.index', compact('absences'));
     }
 
-    public function store(Request $request)
+    // ✅ ACEPTAR INCIDENCIA
+    public function accept($id)
     {
-        $request->validate([
-            'date'   => 'required|date',
-            'reason' => 'required|string|max:255',
-            'file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-        ]);
+        DB::table('incidencia')
+            ->where('id_incidencia', $id)
+            ->update(['estado' => 'aceptada']);
 
-        $filePath = null;
+        return back()->with('success', 'Incidencia aceptada');
+    }
 
-        // ⬇️ AQUÍ VA EXACTAMENTE
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('absences', 'public');
-        }
+    // ❌ RECHAZAR INCIDENCIA
+    public function reject($id)
+    {
+        DB::table('incidencia')
+            ->where('id_incidencia', $id)
+            ->update(['estado' => 'rechazada']);
 
-        Absence::create([
-            'user_id'   => auth()->id(),
-            'date'      => $request->date,
-            'reason'    => $request->reason,
-            'file_path' => $filePath,
-        ]);
-
-        return redirect()->back()->with('success', 'Ausencia enviada correctamente');
+        return back()->with('error', 'Incidencia rechazada');
     }
 }

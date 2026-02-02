@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
+    protected $table = 'empresa';          // 👈 nombre REAL de tu tabla
+    protected $primaryKey = 'id_empresa';  // 👈 PK real
+    public $timestamps = false;
+
     protected $fillable = [
-        'name',
-        'street',
-        'workers',
+        'nombre',
+        'direccion',
+        'telefono',
+        'email_contacto',
     ];
 
-    public function users()
+    // Relación opcional si luego la usas
+    public function alumnos()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Alumno::class, 'empresa_id', 'id_empresa');
     }
 }

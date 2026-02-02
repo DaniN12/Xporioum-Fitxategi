@@ -1,215 +1,108 @@
-<x-app-layout>
+@extends('layouts.teacher', ['title' => 'Registrar alumno'])
 
-    <style>
-        /* Fondo general */
-        body {
-            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
-        }
+@section('content')
 
-        /* Pantalla completa */
-        .full-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem 2rem;
-        }
+<div class="max-w-5xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
 
-        /* Card principal */
-        .student-card {
-            width: 100%;
-            max-width: 1000px;
-            background: #ffffff;
-            border-radius: 26px;
-            padding: 4rem 3.5rem;
-            box-shadow: 0 25px 50px rgba(236, 72, 153, 0.18);
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Título */
-        .student-title {
-            font-size: 2.1rem;
-            font-weight: 800;
-            color: #be185d;
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        /* Wrapper del formulario (clave para que no se vea apretado) */
-        .form-wrapper {
-            max-width: 760px;
-            margin: 0 auto;
-        }
-
-        /* Labels */
-        .form-label {
-            font-weight: 600;
-            color: #9d174d;
-            margin-bottom: 0.75rem;
-        }
-
-        /* Inputs */
-        .form-control,
-        .form-select {
-            border-radius: 16px;
-            padding: 0.95rem 1.15rem;
-            border: 1px solid #f9a8d4;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #ec4899;
-            box-shadow: 0 0 0 0.25rem rgba(236, 72, 153, 0.25);
-        }
-
-        /* Separación vertical real entre campos */
-        .form-group {
-            margin-bottom: 1.8rem;
-        }
-
-        /* Botón principal */
-        .btn-pink {
-            background: linear-gradient(135deg, #ec4899, #f472b6);
-            border: none;
-            color: white;
-            font-weight: 700;
-            border-radius: 18px;
-            padding: 1rem;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-pink:hover {
-            background: linear-gradient(135deg, #db2777, #ec4899);
-            transform: translateY(-3px);
-            box-shadow: 0 14px 30px rgba(236, 72, 153, 0.45);
-        }
-
-        /* Botón secundario */
-        .btn-outline-pink {
-            border: 2px solid #ec4899;
-            color: #ec4899;
-            font-weight: 600;
-            border-radius: 16px;
-            padding: 0.75rem 1.6rem;
-        }
-
-        .btn-outline-pink:hover {
-            background-color: #ec4899;
-            color: #fff;
-        }
-
-        /* Alert */
-        .alert-success {
-            background-color: #fce7f3;
-            border-color: #f9a8d4;
-            color: #9d174d;
-            border-radius: 16px;
-            margin-bottom: 2.5rem;
-        }
-
-        hr {
-            border-top: 1px dashed #f9a8d4;
-            margin: 3.5rem 0;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .student-card {
-                padding: 2.5rem 2rem;
-            }
-
-            .student-title {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
-
-    <div class="full-page">
-
-        <div class="student-card">
-
-            <h1 class="student-title">
+        <div class="px-6 md:px-10 py-8 border-b bg-gradient-to-r from-indigo-50 to-white">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900">
                 Registrar nuevo alumno
             </h1>
+            <p class="text-sm text-slate-600 mt-1">
+                Crea un alumno y asígnalo a una empresa.
+            </p>
+        </div>
+
+        <div class="p-6 md:p-10">
 
             @if (session('success'))
-                <div class="alert alert-success">
+                <div class="mb-6 p-4 rounded-xl bg-green-50 text-green-700 font-semibold border border-green-100">
                     {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-700 border border-red-100">
+                    <div class="font-extrabold mb-2">Revisa estos errores:</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li class="font-semibold">{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 
             <form method="POST" action="{{ route('teacher.students.store') }}">
                 @csrf
 
-                <div class="form-wrapper">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    <div class="row g-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Nombre completo</label>
+                        <input type="text" name="nombre" value="{{ old('nombre') }}" required
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300">
+                    </div>
 
-                        <div class="col-md-6 form-group">
-                            <label class="form-label">Nombre completo</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300">
+                    </div>
 
-                        <div class="col-md-6 form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">DNI</label>
+                        <input type="text" name="dni" value="{{ old('dni') }}" required
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300">
+                    </div>
 
-                        <div class="col-md-6 form-group">
-                            <label class="form-label">DNI</label>
-                            <input type="text" name="dni" class="form-control" required>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Empresa</label>
+                        <select name="empresa_id" required
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300">
+                            <option value="">-- Selecciona empresa --</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->id_empresa }}"
+                                    @selected(old('empresa_id') == $company->id_empresa)>
+                                    {{ $company->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        <div class="col-md-6 form-group">
-                            <label class="form-label">Empresa</label>
-                            <select name="company_id" class="form-select">
-                                <option value="">-- Selecciona empresa --</option>
-                                @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">
-                                        {{ $company->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Contraseña inicial</label>
+                        <input type="password" name="contrasena" required
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300">
+                    </div>
 
-                        <div class="col-12 form-group">
-                            <label class="form-label">Contraseña inicial</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-
-                        <div class="col-12 d-grid mt-4">
-                            <button class="btn btn-pink">
-                                Crear alumno
-                            </button>
-                        </div>
-
+                    <div class="md:col-span-2 pt-2">
+                        <button type="submit"
+                                class="w-full py-3 rounded-xl font-extrabold text-white
+                                       bg-indigo-600 hover:bg-indigo-700 transition shadow">
+                            Crear alumno
+                        </button>
                     </div>
 
                 </div>
             </form>
 
-            <hr>
-
-            <div class="text-center">
-                <a href="{{ route('teacher.students.index') }}" class="btn btn-outline-pink">
-                    ← Gestionar alumnos
+            <div class="mt-8 pt-6 border-t flex items-center justify-center">
+                <a href="{{ route('teacher.students.index') }}"
+                   class="inline-flex items-center gap-2 px-5 py-2 rounded-xl border border-slate-200
+                          text-slate-700 font-bold hover:bg-slate-50 transition">
+                    <i class="bi bi-arrow-left"></i>
+                    Gestionar alumnos
                 </a>
             </div>
 
         </div>
-
     </div>
+</div>
 
-</x-app-layout>
+@endsection
