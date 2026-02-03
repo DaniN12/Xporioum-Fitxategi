@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
-    /**
-     * Listado de alumnos del profesor logueado
-     */
     public function index()
     {
         $profesor = $this->currentProfesor();
@@ -27,18 +24,12 @@ class StudentController extends Controller
         return view('teacher.students.index', compact('students'));
     }
 
-    /**
-     * Formulario crear alumno (dashboard del profesor)
-     */
     public function create()
     {
         $companies = Company::orderBy('nombre')->get();
         return view('teacher.dashboard', compact('companies'));
     }
 
-    /**
-     * Guardar alumno (crea usuario + alumno)
-     */
     public function store(Request $request)
     {
         $profesor = $this->currentProfesor();
@@ -51,7 +42,7 @@ class StudentController extends Controller
             'contrasena'  => 'required|min:6',
         ]);
 
-        // 1️⃣ Crear usuario
+
         $user = User::create([
             'email'      => $request->email,
             'contrasena' => Hash::make($request->contrasena),
@@ -61,7 +52,6 @@ class StudentController extends Controller
             'activo'     => 1,
         ]);
 
-        // 2️⃣ Crear alumno
         Alumno::create([
             'usuario_id'  => $user->id_usuario,
             'profesor_id' => $profesor->id_profesor,
@@ -74,9 +64,6 @@ class StudentController extends Controller
             ->with('success', 'Alumno creado correctamente');
     }
 
-    /**
-     * Editar alumno
-     */
     public function edit($id)
     {
         $profesor = $this->currentProfesor();
@@ -91,9 +78,6 @@ class StudentController extends Controller
         return view('teacher.students.edit', compact('student', 'companies'));
     }
 
-    /**
-     * Actualizar alumno
-     */
     public function update(Request $request, $id)
     {
         $profesor = $this->currentProfesor();
@@ -125,9 +109,6 @@ class StudentController extends Controller
             ->with('success', 'Alumno actualizado');
     }
 
-    /**
-     * Activar / Desactivar alumno
-     */
     public function toggleActive($id)
     {
         $profesor = $this->currentProfesor();
@@ -146,9 +127,6 @@ class StudentController extends Controller
             ->with('success', 'Estado del alumno actualizado');
     }
 
-    /**
-     * Eliminar alumno definitivo
-     */
     public function destroy($id)
     {
         $profesor = $this->currentProfesor();
@@ -171,9 +149,6 @@ class StudentController extends Controller
             ->with('success', 'Alumno eliminado definitivamente');
     }
 
-    /**
-     * 🔐 Profesor logueado (por sesión, NO auth())
-     */
     private function currentProfesor(): Profesor
     {
         $idUsuario = (int) session('id_usuario');

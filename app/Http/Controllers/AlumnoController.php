@@ -35,7 +35,6 @@ class AlumnoController extends Controller
 
         $totalHoras = (float) $fichajes->sum('total_horas');
 
-        // ✅ como ahora lo moviste dentro de alumno/horas/index.blade.php:
         return view('alumno.horas.index', compact('fichajes', 'totalHoras'));
     }
 
@@ -50,18 +49,27 @@ class AlumnoController extends Controller
 
         return response()->streamDownload(function () use ($fichajes) {
             $out = fopen('php://output', 'w');
+
+            // Cabecera CSV
             fputcsv($out, ['Fecha', 'Entrada', 'Salida', 'Descanso(min)', 'Horas trabajadas']);
 
             foreach ($fichajes as $f) {
-                $entrada = $f->hora_entrada ?? 'AUSENCIA';
-                $salida  = $f->hora_salida ?? 'AUSENCIA';
-                $descansoMin = $f->minutos_desc ?? 0;
-                $horasTrab = $f->total_horas === null ? 'AUSENCIA' : number_format((float)$f->total_horas, 2);
+                $entrada = $f->hora_entrada ? substr($f->hora_entrada, 0, 5) : 'AUSENCIA';
+                $salida  = $f->hora_salida  ? substr($f->hora_salida, 0, 5)  : 'AUSENCIA';
+
+                $descansoMin = (int) ($f->minutos_descanso ?? 0);
+
+                // total_horas decimal => formateado
+                $horasTrab = $f->total_horas === null
+                    ? 'AUSENCIA'
+                    : number_format((float) $f->total_horas, 2);
 
                 fputcsv($out, [$f->fecha, $entrada, $salida, $descansoMin, $horasTrab]);
             }
 
             fclose($out);
-        }, 'tus_horas.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+        }, 'tus_horas.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }

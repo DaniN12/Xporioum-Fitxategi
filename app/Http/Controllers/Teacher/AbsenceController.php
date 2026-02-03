@@ -7,9 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 class AbsenceController extends Controller
 {
-    // 📋 LISTAR INCIDENCIAS PARA EL PROFESOR
     public function index()
     {
+        $profesorId = (int) session('profesor_id');
+        if (!$profesorId) {
+            abort(403, 'NO HAY PROFESOR EN SESIÓN');
+        }
+
         $absences = DB::table('incidencia as i')
             ->join('alumno as a', 'a.id_alumno', '=', 'i.alumno_id')
             ->join('usuario as u', 'u.id_usuario', '=', 'a.usuario_id')
@@ -24,13 +28,13 @@ class AbsenceController extends Controller
                 'u.email as alumno_email',
                 'u.dni as alumno_dni'
             )
+            ->where('i.profesor_id', $profesorId)
             ->orderBy('i.fecha', 'desc')
             ->get();
 
         return view('teacher.absences.index', compact('absences'));
     }
 
-    // ✅ ACEPTAR INCIDENCIA
     public function accept($id)
     {
         DB::table('incidencia')
@@ -40,7 +44,6 @@ class AbsenceController extends Controller
         return back()->with('success', 'Incidencia aceptada');
     }
 
-    // ❌ RECHAZAR INCIDENCIA
     public function reject($id)
     {
         DB::table('incidencia')

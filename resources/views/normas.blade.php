@@ -1,4 +1,3 @@
-<!-- Vista moderna de normas -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,7 +24,6 @@
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-sm sm:max-w-md md:max-w-4xl">
             <div class="relative overflow-hidden rounded-[28px] bg-white shadow-2xl ring-1 ring-black/10">
-                <!-- Header -->
                 <header class="h-14 bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-between px-4">
                     <div class="flex items-center gap-3">
                         <div class="h-9 w-9 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-xl shadow-lg">🐰</div>
@@ -45,9 +43,6 @@
                         </form>
                     </div>
                 </header>
-                <!-- Nav desktop -->
-
-                <!-- Contenido principal -->
                 <main class="bg-[#f2dcff] p-6 md:p-10 min-h-[520px]">
                     <div class="max-w-3xl mx-auto space-y-6 animate-fade-in">
                         <div class="text-center mb-8">
@@ -64,7 +59,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Acordeones de normas -->
                         <div class="space-y-3">
                             @foreach($normas as $i => $norma)
                             <div class="bg-white rounded-xl shadow-md overflow-hidden">
@@ -93,7 +87,6 @@
                         </div>
                     </div>
                 </main>
-                <!-- Bottom nav móvil -->
 
             </div>
         </div>

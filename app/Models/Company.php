@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    protected $table = 'empresa';          // 👈 nombre REAL de tu tabla
-    protected $primaryKey = 'id_empresa';  // 👈 PK real
+    protected $table = 'empresa';
+    protected $primaryKey = 'id_empresa';
     public $timestamps = false;
 
     protected $fillable = [
@@ -17,7 +17,7 @@ class Company extends Model
         'email_contacto',
     ];
 
-    // Relación opcional si luego la usas
+
     public function alumnos()
     {
         return $this->hasMany(Alumno::class, 'empresa_id', 'id_empresa');

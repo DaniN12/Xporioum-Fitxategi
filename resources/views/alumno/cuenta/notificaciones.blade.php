@@ -1,12 +1,12 @@
-@extends('layouts.alumno', ['title' => 'Notificaciones'])
+@extends('layouts.alumno', ['title' => __('message.notifications_title')])
 
 @section('content')
 <div class="max-w-4xl mx-auto">
   <div class="bg-white rounded-2xl shadow p-6">
-    <h2 class="text-2xl font-extrabold mb-6">Notificaciones</h2>
+    <h2 class="text-2xl font-extrabold mb-6">{{ __('message.notifications_heading') }}</h2>
 
     @if(empty($items))
-      <div class="text-gray-500">No hay notificaciones todavía.</div>
+      <div class="text-gray-500">{{ __('message.notifications_empty') }}</div>
     @else
       <ul class="space-y-3">
         @foreach($items as $it)

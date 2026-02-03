@@ -1,12 +1,12 @@
-@extends('layouts.teacher', ['title' => 'Editar alumno'])
+@extends('layouts.teacher', ['title' => __('message.t_student_edit_title')])
 
 @section('content')
   <div class="max-w-4xl mx-auto">
     <div class="rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
       <div class="p-6 md:p-8 border-b border-slate-100">
-        <h1 class="text-3xl font-extrabold tracking-tight">Editar alumno</h1>
+        <h1 class="text-3xl font-extrabold tracking-tight">{{ __('message.t_student_edit_heading') }}</h1>
         <p class="text-slate-500 mt-1 text-sm font-semibold">
-          Modifica sus datos y la empresa asignada.
+          {{ __('message.t_student_edit_subtitle') }}
         </p>
       </div>
 
@@ -19,7 +19,7 @@
            class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2
                   font-extrabold text-slate-700 hover:bg-slate-50 transition">
           <i class="bi bi-arrow-left"></i>
-          Volver al listado
+          {{ __('message.t_student_back_list') }}
         </a>
       </div>
     </div>

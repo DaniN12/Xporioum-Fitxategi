@@ -9,7 +9,6 @@ class IncidenciaController extends Controller
 {
     public function create()
     {
-        // ✅ tu vista ahora está en resources/views/alumno/incidencias/create.blade.php
         return view('alumno.incidencias.create');
     }
 
@@ -21,13 +20,19 @@ class IncidenciaController extends Controller
             'adjunto' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:8192',
         ]);
 
-        // ✅ aquí usamos tu sesión (ajusta si tu sesión se llama distinto)
         $alumnoId = (int) session('alumno_id');
         if (!$alumnoId) {
             abort(403, 'NO HAY ALUMNO EN SESIÓN');
         }
 
-        // ✅ subimos archivo si existe
+        $profesorId = DB::table('alumno')
+            ->where('id_alumno', $alumnoId)
+            ->value('profesor_id');
+
+        if (!$profesorId) {
+            abort(403, 'EL ALUMNO NO TIENE PROFESOR ASIGNADO');
+        }
+
         $adjuntoPath = null;
         $adjuntoNombre = null;
 
@@ -37,10 +42,9 @@ class IncidenciaController extends Controller
             $adjuntoNombre = $file->getClientOriginalName();
         }
 
-        // ✅ guardamos en tabla incidencia (NO en Documento)
         DB::table('incidencia')->insert([
             'alumno_id'      => $alumnoId,
-            'profesor_id'    => null,              // luego el profe puede asignarse si quieres
+            'profesor_id'    => $profesorId,
             'fecha'          => $request->fecha,
             'motivo'         => $request->motivo,
             'estado'         => 'pendiente',

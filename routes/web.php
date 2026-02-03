@@ -14,92 +14,87 @@ use App\Http\Controllers\Teacher\QrController;
 use App\Http\Controllers\Teacher\AttendanceController as TeacherAttendanceController;
 use App\Http\Controllers\Teacher\AbsenceController as TeacherAbsenceController;
 
-Route::get('/', function () {
-    return view('preloader');
-});
 
-// =====================
-// LOGIN
-// =====================
-Route::get('/login', [AuthController::class, 'mostrarLogin'])->name('login.form');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/set-locale/{locale}', function ($locale) {
+    if (in_array($locale, ['es', 'en', 'eu'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return back();
+})->name('setLocale');
 
-// =====================
-// HORAS (ALUMNO)
-// =====================
-Route::get('/horas', [AlumnoController::class, 'horas'])->name('horas.index');
-Route::get('/horas/descargar', [AlumnoController::class, 'downloadHoras'])->name('horas.download');
+Route::middleware(['locale'])->group(function () {
 
-// =====================
-// FICHAR (ALUMNO)
-// =====================
-Route::get('/fichar', [FichajeController::class, 'vistaFichar'])->name('fichar.vista');
-Route::get('/fichar/qr', [FichajeController::class, 'vistaEscanearQR'])->name('fichar.qr');
-Route::post('/fichar/qr/validar', [FichajeController::class, 'validarQR'])->name('fichar.qr.validar');
-
-Route::post('/fichar/descanso', [FichajeController::class, 'iniciarDescanso'])->name('fichar.descanso');
-Route::post('/fichar/retomar', [FichajeController::class, 'retomarTurno'])->name('fichar.retomar');
-Route::post('/salida', [FichajeController::class, 'ficharSalida'])->name('fichar.salida');
-
-// =====================
-// INCIDENCIAS (ALUMNO)
-// =====================
-Route::get('/incidencias/crear', [IncidenciaController::class, 'create'])->name('incidencias.create');
-Route::post('/incidencias', [IncidenciaController::class, 'store'])->name('incidencias.store');
-
-// =====================
-// NORMAS
-// =====================
-Route::get('/normas', function () {
-    return view('normas.index');
-})->name('normas');
-
-// =====================
-// CUENTA (ALUMNO)
-// =====================
-Route::prefix('cuenta')->name('cuenta.')->group(function () {
-
-    Route::get('/', [CuentaController::class, 'index'])->name('index');
-
-    Route::get('/datos', [CuentaController::class, 'datos'])->name('datos');
-    Route::post('/datos', [CuentaController::class, 'datosUpdate'])->name('datos.update');
-
-    Route::get('/documentos', [CuentaController::class, 'documentos'])->name('documentos');
-    Route::post('/documentos', [CuentaController::class, 'documentosUpload'])->name('documentos.upload');
-
-    Route::get('/documentos/{tipo}/download', [CuentaController::class, 'documentoDownload'])
-        ->name('documentos.download');
-
-    Route::get('/notificaciones', [CuentaController::class, 'notificaciones'])->name('notificaciones');
-
-    Route::get('/password', [CuentaController::class, 'passwordForm'])->name('password');
-    Route::post('/password', [CuentaController::class, 'passwordUpdate'])->name('password.update');
-});
-
-// =======================
-// TEACHER (PROFESOR)
-// =======================
-Route::middleware('is_teacher')
-    ->prefix('teacher')
-    ->name('teacher.')
-    ->group(function () {
-
-        Route::get('/dashboard', [StudentController::class, 'create'])->name('dashboard');
-        Route::resource('students', StudentController::class);
-
-        Route::patch('/students/{id}/toggle', [StudentController::class, 'toggleActive'])
-            ->name('students.toggle');
-
-        Route::get('/attendance', [TeacherAttendanceController::class, 'index'])->name('attendance.index');
-        Route::get('/attendance/student', [TeacherAttendanceController::class, 'byStudent'])->name('attendance.student');
-
-        Route::get('/absences', [TeacherAbsenceController::class, 'index'])->name('absences.index');
-        Route::post('/absences/{absence}/accept', [TeacherAbsenceController::class, 'accept'])->name('absences.accept');
-        Route::post('/absences/{absence}/reject', [TeacherAbsenceController::class, 'reject'])->name('absences.reject');
-        Route::get('/absences/{absence}/{status}', [TeacherAbsenceController::class, 'update'])->name('absences.update');
-
-        // ================= QR PROFESOR =================
-        Route::get('/qr', [QrController::class, 'generate'])->name('qr');          // pantalla
-        Route::post('/qr/generate', [QrController::class, 'apiGenerate'])->name('qr.api'); // AJAX
+    Route::get('/', function () {
+        return view('preloader');
     });
+
+    Route::get('/qr/{token}', [FichajeController::class, 'consumeQrPublic'])->name('qr.consume');
+
+    Route::get('/login', [AuthController::class, 'mostrarLogin'])->name('login.form');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/horas', [AlumnoController::class, 'horas'])->name('horas.index');
+    Route::get('/horas/descargar', [AlumnoController::class, 'downloadHoras'])->name('horas.download');
+
+    Route::get('/fichar', [FichajeController::class, 'vistaFichar'])->name('fichar.vista');
+    Route::get('/fichar/qr', [FichajeController::class, 'vistaEscanearQR'])->name('fichar.qr');
+    Route::post('/fichar/qr/validar', [FichajeController::class, 'validarQR'])->name('fichar.qr.validar');
+
+    Route::post('/fichar/descanso', [FichajeController::class, 'iniciarDescanso'])->name('fichar.descanso');
+    Route::post('/fichar/retomar', [FichajeController::class, 'retomarTurno'])->name('fichar.retomar');
+    Route::post('/salida', [FichajeController::class, 'ficharSalida'])->name('fichar.salida');
+
+    Route::get('/incidencias/crear', [IncidenciaController::class, 'create'])->name('incidencias.create');
+    Route::post('/incidencias', [IncidenciaController::class, 'store'])->name('incidencias.store');
+
+    Route::get('/normas', function () {
+        return view('normas.index');
+    })->name('normas');
+
+    Route::prefix('cuenta')->name('cuenta.')->group(function () {
+
+        Route::get('/', [CuentaController::class, 'index'])->name('index');
+
+        Route::get('/datos', [CuentaController::class, 'datos'])->name('datos');
+        Route::post('/datos', [CuentaController::class, 'datosUpdate'])->name('datos.update');
+
+        Route::get('/documentos', [CuentaController::class, 'documentos'])->name('documentos');
+        Route::post('/documentos', [CuentaController::class, 'documentosUpload'])->name('documentos.upload');
+
+        Route::get('/documentos/{tipo}/download', [CuentaController::class, 'documentoDownload'])
+            ->name('documentos.download');
+
+        Route::get('/notificaciones', [CuentaController::class, 'notificaciones'])->name('notificaciones');
+
+        Route::get('/password', [CuentaController::class, 'passwordForm'])->name('password');
+        Route::post('/password', [CuentaController::class, 'passwordUpdate'])->name('password.update');
+    });
+
+    Route::middleware('is_teacher')
+        ->prefix('teacher')
+        ->name('teacher.')
+        ->group(function () {
+
+            Route::get('/dashboard', [StudentController::class, 'create'])->name('dashboard');
+            Route::resource('students', StudentController::class);
+
+            Route::patch('/students/{id}/toggle', [StudentController::class, 'toggleActive'])
+                ->name('students.toggle');
+
+            Route::get('/attendance', [TeacherAttendanceController::class, 'index'])->name('attendance.index');
+            Route::get('/attendance/student', [TeacherAttendanceController::class, 'byStudent'])->name('attendance.student');
+
+            Route::post('/attendance/update/{id}', [TeacherAttendanceController::class, 'update'])
+                ->name('attendance.update');
+
+            Route::get('/absences', [TeacherAbsenceController::class, 'index'])->name('absences.index');
+            Route::post('/absences/{id}/accept', [TeacherAbsenceController::class, 'accept'])->name('absences.accept');
+            Route::post('/absences/{id}/reject', [TeacherAbsenceController::class, 'reject'])->name('absences.reject');
+
+            Route::get('/qr', [QrController::class, 'generate'])->name('qr');
+            Route::post('/qr/generate', [QrController::class, 'apiGenerate'])->name('qr.api');
+        });
+
+});

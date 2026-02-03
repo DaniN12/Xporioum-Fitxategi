@@ -1,112 +1,152 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Escanear QR</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite('resources/css/app.css')
-</head>
+@extends('layout.masterpage')
 
-<body class="min-h-screen flex items-center justify-center px-6
-             bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 text-gray-900">
+@section('content')
 
-    <div class="w-full max-w-md text-center space-y-8">
+<div class="min-h-screen flex items-center justify-center bg-[#F7F9FE] relative overflow-hidden">
 
-        {{-- TÍTULO --}}
-        <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 text-white drop-shadow-lg">Escanear código QR</h1>
-        <p class="text-white/90 mb-6">Permite la cámara y apunta al QR del profesor.</p>
+    <div class="absolute top-6 right-6 flex gap-2 z-20">
+        <a href="{{ route('setLocale', 'es') }}">
+            <img src="{{ asset('img/español.png') }}" class="w-10 hover:scale-110 transition-transform" alt="Español">
+        </a>
+        <a href="{{ route('setLocale', 'en') }}">
+            <img src="{{ asset('img/ingles.png') }}" class="w-10 hover:scale-110 transition-transform" alt="English">
+        </a>
+        <a href="{{ route('setLocale', 'eu') }}">
+            <img src="{{ asset('img/euskera.png') }}" class="w-10 hover:scale-110 transition-transform" alt="Euskera">
+        </a>
+    </div>
 
-        {{-- MENSAJE DE ERROR --}}
-        @if(session('error'))
-            <div class="p-3 rounded-2xl bg-red-100/80 text-red-800 font-semibold shadow-lg">
-                {{ session('error') }}
+    <div class="absolute -left-72 -bottom-72 w-[750px] h-[750px] rounded-full
+                bg-[radial-gradient(circle,rgba(236,72,153,0.12),transparent_65%)]">
+    </div>
+
+    <div class="absolute -right-72 -top-80 w-[750px] h-[750px] rounded-full
+                bg-[radial-gradient(circle,rgba(91,127,232,0.16),transparent_65%)]">
+    </div>
+
+    <div class="relative z-10 w-full max-w-lg bg-white rounded-2xl
+                shadow-[0_25px_45px_rgba(15,23,42,0.12)]
+                px-12 py-12 text-center">
+
+        <img src="{{ asset('img/logo-fitxategi.png') }}"
+             alt="Fitxategi"
+             class="w-16 mx-auto mb-6">
+
+        <h1 class="text-[32px] font-serif font-semibold text-slate-800">
+            {{ __('message.qr_title') }}
+        </h1>
+
+        <p class="text-sm text-slate-500 mt-2 mb-8">
+            {{ __('message.qr_subtitle') }}
+        </p>
+
+        <div class="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-slate-50/40
+                    h-32 flex items-center justify-center mb-4 overflow-hidden">
+
+            <div id="reader" class="w-full h-full flex items-center justify-center">
+                <span class="text-sm text-slate-400">{{ __('message.qr_camera_preview') }}</span>
             </div>
-        @endif
-
-        {{-- CONTENEDOR DEL ESCÁNER --}}
-        <div class="rounded-3xl border border-white/20 bg-white/10 backdrop-blur-lg p-6 shadow-2xl hover:shadow-3xl transition-shadow duration-300">
-            <div id="reader" class="mx-auto" style="width: 100%; max-width: 320px;"></div>
         </div>
 
-        <div id="status" class="mt-3 text-sm text-white/80 font-medium drop-shadow">
-            Iniciando cámara…
-        </div>
+        <p id="msgCam" class="text-xs text-slate-500 mb-8">
+            {{ __('message.qr_camera_error_initial') }}
+        </p>
 
-        {{-- BOTONES --}}
-        <div class="mt-6 flex flex-col gap-4">
-
-            {{-- BOTÓN ACTIVAR --}}
-            <button id="btnStart"
-                class="w-full rounded-full bg-white text-gray-700 font-bold text-lg sm:text-xl py-4 shadow-lg
-                       hover:scale-105 hover:shadow-2xl hover:bg-gray-100 transition-transform duration-300 hidden">
-                Activar cámara
+        <div class="space-y-3">
+            <button type="button"
+                    id="btnActivarCamara"
+                    class="w-full h-12 rounded-xl bg-[#4338ca] text-white text-sm font-semibold
+                           hover:bg-[#372fb3] transition shadow-sm">
+                {{ __('message.qr_activate_camera') }}
             </button>
 
-            {{-- BOTÓN VOLVER --}}
-            <a href="{{ route('fichar.vista') }}"
-               class="w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                      text-white font-bold text-lg sm:text-xl py-4 shadow-lg
-                      shadow-lg shadow-indigo-200
-                      hover:scale-105 hover:shadow-2xl hover:bg-gray-100 transition-transform duration-300">
-                Volver
+            <a href="{{ url()->previous() }}"
+               class="block w-full h-12 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold
+                      hover:bg-slate-200 transition leading-[48px]">
+                {{ __('message.qr_back') }}
             </a>
         </div>
 
-        <form id="qrForm" action="{{ route('fichar.qr.validar') }}" method="POST" class="hidden">
+        <p class="mt-8 text-xs text-slate-400 text-center">
+            {{ __('message.qr_footer') }}
+        </p>
+
+        <form id="formValidar" method="POST" action="{{ route('fichar.qr.validar') }}" class="hidden">
             @csrf
-            <input type="hidden" name="token" id="token">
+            <input type="hidden" name="token" id="tokenInput">
         </form>
+
     </div>
+</div>
 
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <script>
-        const statusEl = document.getElementById('status');
-        const btnStart = document.getElementById('btnStart');
-        const form = document.getElementById('qrForm');
-        const tokenInput = document.getElementById('token');
+<script src="https://unpkg.com/html5-qrcode@2.3.10/html5-qrcode.min.js"></script>
 
-        let qr = null;
-        let running = false;
+<script>
+const btn = document.getElementById('btnActivarCamara');
+const msg = document.getElementById('msgCam');
+const readerEl = document.getElementById('reader');
 
-        function onScanSuccess(decodedText) {
-            if (!running) return;
-            running = false;
-            statusEl.textContent = "QR detectado. Registrando…";
-            tokenInput.value = decodedText;
-            try { qr.stop(); } catch(e) {}
-            form.submit();
-        }
+let html5QrCode = null;
+let running = false;
 
-        async function startCamera() {
-            statusEl.textContent = "Solicitando permiso de cámara…";
-            btnStart.classList.add('hidden');
+function extraerTokenDesdeTexto(texto) {
+    const m = texto.match(/\/qr\/([0-9a-fA-F-]{20,})/);
+    if (m && m[1]) return { type: 'url', token: m[1], url: texto };
 
-            if (!qr) qr = new Html5Qrcode("reader");
+    const m2 = texto.match(/[0-9a-fA-F-]{20,}/);
+    if (m2) return { type: 'token', token: m2[0] };
 
-            try {
-                const cameras = await Html5Qrcode.getCameras();
-                if (!cameras || cameras.length === 0) {
-                    statusEl.textContent = "No se detectó cámara.";
+    return null;
+}
+
+async function iniciarCamara() {
+    if (running) return;
+
+    msg.textContent = "{{ __('message.qr_camera_starting') }}";
+    btn.disabled = true;
+    readerEl.innerHTML = "";
+
+    html5QrCode = new Html5Qrcode("reader");
+
+    try {
+        const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+        await html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText) => {
+                const info = extraerTokenDesdeTexto(decodedText);
+                if (!info) return;
+
+                running = false;
+                html5QrCode.stop().catch(() => {});
+                html5QrCode.clear().catch(() => {});
+
+                msg.textContent = "{{ __('message.qr_detected') }}";
+
+                if (info.type === 'url') {
+                    window.location.href = decodedText;
                     return;
                 }
 
-                await qr.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: 250 },
-                    onScanSuccess
-                );
-
-                running = true;
-                statusEl.textContent = "Cámara activa. Escanea el QR del profesor.";
-            } catch (err) {
-                console.error(err);
-                statusEl.textContent = "No se pudo acceder a la cámara. Pulsa 'Activar cámara'.";
-                btnStart.classList.remove('hidden');
+                document.getElementById('tokenInput').value = info.token;
+                document.getElementById('formValidar').submit();
             }
-        }
+        );
 
-        btnStart.addEventListener('click', startCamera);
-        window.addEventListener('load', startCamera);
-    </script>
-</body>
-</html>
+        running = true;
+        msg.textContent = "{{ __('message.qr_camera_active') }}";
+        btn.textContent = "{{ __('message.qr_camera_active_btn') }}";
+
+    } catch (e) {
+        console.error(e);
+        msg.textContent = "{{ __('message.qr_camera_error') }}";
+        btn.disabled = false;
+        readerEl.innerHTML = '<span class="text-sm text-slate-400">{{ __('message.qr_camera_preview') }}</span>';
+    }
+}
+
+btn.addEventListener('click', iniciarCamara);
+</script>
+
+@endsection

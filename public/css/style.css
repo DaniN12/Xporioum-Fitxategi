@@ -1,6 +1,4 @@
-/* ============================================
-   PRELOADER ESTILOS
-   ============================================ */
+/* Preloader estilos*/
 
 #preloader {
     position: fixed;
@@ -57,9 +55,7 @@
 
 
 
-/* ============================================
-   LOGIN PÁGINA ESTILOS
-   ============================================ */
+/* Login estilos */
 
 .login-wrapper {
     min-height: 100vh;

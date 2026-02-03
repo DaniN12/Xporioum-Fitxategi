@@ -15,41 +15,66 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'contrasena' => 'required|string',
-        ]);
+        $request->validate(
+            [
+                'email' => ['required', 'email'],
+                'contrasena' => ['required', 'string'],
+            ],
+            [
+                'email.required' => __('message.validation_email_required'),
+                'email.email' => __('message.validation_email_email'),
+                'contrasena.required' => __('message.validation_password_required'),
+            ]
+        );
 
-        // Buscar usuario
-        $usuario = DB::table('usuario')->where('email', $request->email)->first();
+        $email = trim(mb_strtolower($request->email));
+        $password = (string) $request->contrasena;
 
-        if (!$usuario || !Hash::check($request->contrasena, $usuario->contrasena)) {
+        $usuario = DB::table('usuario')
+            ->whereRaw('LOWER(email) = ?', [$email])
+            ->first();
+
+        if (!$usuario) {
             return back()
                 ->withInput($request->only('email'))
-                ->with('login_error', true)
-                ->with('error', 'Correo o contraseña incorrectos');
+                ->with('error', __('message.login_invalid'));
         }
 
-        // Detectar profesor
+        $hashEnBD = (string) ($usuario->contrasena ?? '');
+
+        $passwordOk = false;
+
+        if ($hashEnBD !== '') {
+            if (str_starts_with($hashEnBD, '$2y$') || str_starts_with($hashEnBD, '$argon2')) {
+                $passwordOk = Hash::check($password, $hashEnBD);
+            } else {
+                $passwordOk = hash_equals($hashEnBD, $password);
+            }
+        }
+
+        if (!$passwordOk) {
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', __('message.login_invalid'));
+        }
+
         $prof = DB::table('profesor')
             ->where('usuario_id', $usuario->id_usuario)
             ->first();
 
-        // Detectar alumno
         $alumno = DB::table('alumno')
             ->where('usuario_id', $usuario->id_usuario)
             ->first();
 
-        // Guardar sesión
         $request->session()->put([
             'id_usuario'  => $usuario->id_usuario,
             'is_teacher'  => $prof ? true : false,
             'profesor_id' => $prof->id_profesor ?? null,
             'alumno_id'   => $alumno->id_alumno ?? null,
         ]);
-        $request->session()->save();
 
-        // Redirección por rol
+        $request->session()->regenerate();
+
         if ($prof) {
             return redirect()->route('teacher.dashboard');
         }
@@ -60,6 +85,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
+        $request->session()->regenerateToken();
+
         return redirect()->route('login.form');
     }
 }

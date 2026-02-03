@@ -11,7 +11,7 @@ class CuentaController extends Controller
 {
     private function userId(): int
     {
-        return (int) session('id_usuario'); // <- si tu sesión se llama diferente, cámbialo aquí
+        return (int) session('id_usuario');
     }
 
     private function usuario()
@@ -35,25 +35,26 @@ class CuentaController extends Controller
         if (!$u) abort(403);
 
         $data = $request->validate([
-            'nombre' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
-            'dni' => 'nullable|string|max:15',
-            'idioma_id' => 'nullable|integer',
-            'telefono' => 'nullable|string|max:30',
-            'foto' => 'nullable|image|max:2048',
+            'solicitud' => 'required|string|max:2000',
         ]);
 
-        $update = $data;
+        $alumnoId = (int) session('alumno_id');
 
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('perfil', 'public');
-            $update['foto_path'] = $path;
-            unset($update['foto']);
+        if (!$alumnoId) {
+            $alumnoId = (int) DB::table('alumno')
+                ->where('usuario_id', $this->userId())
+                ->value('id_alumno');
         }
 
-        DB::table('usuario')->where('id_usuario', $this->userId())->update($update);
+        DB::table('solicitud_datos')->insert([
+            'usuario_id' => $this->userId(),
+            'alumno_id'  => $alumnoId ?: null,
+            'mensaje'    => $data['solicitud'],
+            'estado'     => 'pendiente',
+            'created_at' => now(),
+        ]);
 
-        return back()->with('success', 'Datos actualizados ✅');
+        return back()->with('success', 'Solicitud enviada ');
     }
 
     public function documentos()
@@ -77,7 +78,7 @@ class CuentaController extends Controller
 
         DB::table('usuario')->where('id_usuario', $this->userId())->update([$col => $path]);
 
-        return back()->with('success', 'Documento subido ✅');
+        return back()->with('success', 'Documento subido ');
     }
 
     public function documentoDownload(string $tipo)
@@ -119,6 +120,6 @@ class CuentaController extends Controller
             'contrasena' => Hash::make($data['password']),
         ]);
 
-        return back()->with('success', 'Contraseña cambiada ✅');
+        return back()->with('success', 'Contraseña cambiada ');
     }
 }

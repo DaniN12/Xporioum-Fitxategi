@@ -1,87 +1,89 @@
 @extends('layouts.alumno')
 
 @section('content')
-<div class="flex items-center justify-center">
-    <div class="w-full max-w-xl bg-white shadow-xl rounded-2xl p-12 text-center space-y-8">
+<div class="min-h-screen flex items-center justify-center bg-[#F7F9FE]">
+    <div class="w-full max-w-xl bg-white rounded-2xl shadow-[0_25px_45px_rgba(15,23,42,0.12)] px-10 py-10 text-center">
 
-        <div class="flex justify-center">
-            <img src="{{ asset('img/logo-fitxategi.png') }}" class="w-16" alt="Logo">
-        </div>
+        <img src="{{ asset('img/logo-fitxategi.png') }}" alt="Fitxategi" class="w-16 mx-auto mb-6">
 
-        <h1 class="text-4xl font-bold text-gray-800">
-            Bienvenido a <span class="text-indigo-600">Fitxategi</span>
+        <h1 class="text-[32px] font-serif font-semibold text-slate-800">
+            {{ __('message.fichar_title') }} <span class="text-indigo-600">Fitxategi</span>
         </h1>
 
-        @if(session('error'))
-            <div class="p-3 rounded-lg bg-red-100 text-red-700 font-semibold">
-                {{ session('error') }}
-            </div>
-        @endif
+        <p class="text-sm text-slate-500 mt-2 mb-8">
+            {{ __('message.fichar_subtitle') }}
+        </p>
 
         @if(session('success'))
-            <div class="p-3 rounded-lg bg-green-100 text-green-700 font-semibold">
+            <div class="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-700 font-semibold">
                 {{ session('success') }}
             </div>
         @endif
 
-        <div class="space-y-4">
+        @if(session('error'))
+            <div class="mb-4 p-3 rounded-xl bg-red-50 text-red-700 font-semibold">
+                {{ session('error') }}
+            </div>
+        @endif
 
-            @if($estado === 'fuera')
+        <div class="space-y-3">
+
+            {{-- 1) Botón principal según estado --}}
+            @if($estado === 'esperando_qr')
                 <a href="{{ route('fichar.qr') }}"
-                   class="block w-full py-4 rounded-xl font-bold text-xl text-white bg-indigo-600 hover:bg-indigo-700 transition shadow">
-                    FICHAR
+                   class="block w-full h-12 rounded-xl bg-[#4338ca] text-white text-sm font-semibold
+                          hover:bg-[#372fb3] transition shadow-sm leading-[48px]">
+                    {{ __('message.fichar_btn_clock_in') }}
                 </a>
 
-                <a href="{{ route('incidencias.create') }}"
-                   class="block w-full py-4 rounded-xl font-bold text-xl text-gray-500 bg-gray-200 opacity-60 cursor-not-allowed">
-                    INCIDENCIA
-                </a>
-            @endif
-
-            @if($estado === 'dentro')
-                <form action="{{ route('fichar.descanso') }}" method="POST">
+            @elseif($estado === 'descanso')
+                <form method="POST" action="{{ route('fichar.descanso') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full py-4 rounded-xl font-bold text-xl text-white bg-yellow-500 hover:bg-yellow-600 transition shadow">
-                        DESCANSO
+                            class="w-full h-12 rounded-xl bg-[#4338ca] text-white text-sm font-semibold
+                                   hover:bg-[#372fb3] transition shadow-sm">
+                        {{ __('message.fichar_btn_break') }}
                     </button>
                 </form>
 
-                <form action="{{ route('fichar.salida') }}" method="POST">
+            @elseif($estado === 'retomar')
+                <form method="POST" action="{{ route('fichar.retomar') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full py-4 rounded-xl font-bold text-xl text-white bg-red-600 hover:bg-red-700 transition shadow">
-                        SALIR
-                    </button>
-                </form>
-            @endif
-
-            @if($estado === 'descanso')
-                <form action="{{ route('fichar.retomar') }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="w-full py-4 rounded-xl font-bold text-xl text-white bg-green-600 hover:bg-green-700 transition shadow">
-                        RETOMAR
+                            class="w-full h-12 rounded-xl bg-[#4338ca] text-white text-sm font-semibold
+                                   hover:bg-[#372fb3] transition shadow-sm">
+                        {{ __('message.fichar_btn_resume') }}
                     </button>
                 </form>
 
-                <button class="w-full py-4 rounded-xl font-bold text-gray-400 bg-gray-200 opacity-60 cursor-not-allowed">
-                    SALIR
+            @elseif($estado === 'salida')
+                <form method="POST" action="{{ route('fichar.salida') }}">
+                    @csrf
+                    <button type="submit"
+                            class="w-full h-12 rounded-xl bg-[#4338ca] text-white text-sm font-semibold
+                                   hover:bg-[#372fb3] transition shadow-sm">
+                        {{ __('message.fichar_btn_exit') }}
+                    </button>
+                </form>
+
+            @elseif($estado === 'finalizado')
+                <button disabled
+                        class="w-full h-12 rounded-xl bg-slate-300 text-white text-sm font-semibold cursor-not-allowed">
+                    {{ __('message.fichar_btn_finished') }}
                 </button>
             @endif
 
-            @if($estado === 'finalizado')
-                <div class="text-green-700 font-bold text-lg">
-                    Turno finalizado ✅
-                </div>
-
-                <a href="{{ route('fichar.vista') }}"
-                   class="block w-full py-4 rounded-xl font-bold text-xl text-white bg-indigo-600 hover:bg-indigo-700 transition shadow">
-                    ACTUALIZAR
-                </a>
-            @endif
-
+            {{-- 2) Botón fijo: AUSENCIAS --}}
+            <a href="{{ route('incidencias.create') }}"
+               class="block w-full h-12 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold
+                      hover:bg-slate-200 transition shadow-sm leading-[48px]">
+                {{ __('message.fichar_btn_absences') }}
+            </a>
         </div>
+
+        <p class="mt-8 text-xs text-slate-400 text-center">
+            {{ __('message.fichar_footer') }}
+        </p>
     </div>
 </div>
 @endsection

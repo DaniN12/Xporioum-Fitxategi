@@ -12,7 +12,7 @@ class Role extends Model
         'name',
     ];
 
-    // RELACIONES DE ELOQUENT
+
     public function users()
     {
         return $this->hasMany(User::class);

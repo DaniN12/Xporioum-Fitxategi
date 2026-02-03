@@ -43,7 +43,7 @@
             Mi contraseña
           </a>
 
-          {{-- LOGOUT (POST) --}}
+          {{-- Logout --}}
           <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
