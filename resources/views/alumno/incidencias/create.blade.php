@@ -101,7 +101,7 @@
             </div>
 
             <button type="submit"
-                class="w-full py-4 rounded-2xl font-extrabold text-white bg-[#4338ca] hover:bg-black transition shadow-lg">
+                class="w-full py-4 rounded-2xl font-extrabold text-white bg-[#4338ca] transition shadow-lg">
                 {{ __('message.incidence_submit') }}
             </button>
         </form>
