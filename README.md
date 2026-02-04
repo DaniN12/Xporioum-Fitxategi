@@ -3,70 +3,69 @@
 </p>
 
 <p align="center">
-  <strong>Guía de instalación y configuración del proyecto</strong>
+  <strong>Documentación oficial del proyecto</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/status-active-success.svg">
-  <img src="https://img.shields.io/badge/framework-Laravel-red.svg">
-  <img src="https://img.shields.io/badge/php-%3E%3D8.0-blue.svg">
+  <img src="https://img.shields.io/badge/status-final-success.svg">
+  <img src="https://img.shields.io/badge/branch-daniDev-purple.svg">
+  <img src="https://img.shields.io/badge/node-%3E%3D18-green.svg">
 </p>
 
 ---
 
-## 🛠️ Cómo instalar el proyecto
+## 📌 Información importante
 
-Sigue los siguientes pasos para configurar el proyecto correctamente en tu entorno local.
+🔔 **La versión final y estable del proyecto se encuentra en la rama `daniDev`.**
+Asegúrate de cambiar a esa rama antes de trabajar con el código:
+
+```bash
+git checkout daniDev
+```
 
 ---
 
-## ⚙️ Configurar el archivo `.env`
+## 🛠️ Requisitos previos
 
-Duplica el archivo de configuración:
+Antes de empezar, asegúrate de tener instalado en tu sistema:
+
+* **Node.js** (versión 18 o superior)
+* **npm** (incluido con Node.js)
+* **Git**
+
+
+---
+
+## 📥 Clonar el repositorio
+
+Clona el proyecto desde GitHub con el siguiente comando:
 
 ```bash
-.env.example → .env
-Después edita el archivo .env y configura los siguientes valores:
-
-env
-Copiar código
-DB_CONNECTION=mysql           # Tipo de conexión (normalmente MySQL)
-DB_HOST=127.0.0.1             # Dirección del host (normalmente localhost)
-DB_PORT=3306                  # Puerto para MySQL
-DB_DATABASE=nombre_base_datos # Nombre de la base de datos
-DB_USERNAME=usuario_bd        # Usuario de la base de datos
-DB_PASSWORD=contraseña_bd     # Contraseña del usuario
-
-SESSION_DRIVER=cookie         # Método de manejo de sesiones
-CACHE_PREFIX=sync             # Prefijo del sistema de caché
-📥 Clonar el repositorio
-Clona el proyecto desde GitHub usando:
-
-bash
-Copiar código
 git clone https://github.com/DaniN12/DaniN12-Xporioum-Fitxategi.git
-📦 Instalar dependencias
-Accede al directorio del proyecto e instala las dependencias con Composer:
+```
 
-bash
-Copiar código
-cd Xporioum_Fitxategi
-composer install
-🗄️ Crear la base de datos y el usuario
-Usando HeidiSQL, phpMyAdmin o una herramienta similar:
+Accede a la carpeta del proyecto:
 
-Crea una base de datos
+```bash
+cd DaniN12-Xporioum-Fitxategi
+```
 
-Crea un usuario
+---
 
-Asigna los permisos necesarios
+## 🌿 Cambiar a la rama final
 
-Usa los mismos valores configurados en el archivo .env
+La rama principal del desarrollo final es **`daniDev`**:
 
-🔐 Generar la clave de la aplicación
-Ejecuta el siguiente comando:
+```bash
+git checkout daniDev
+```
 
-bash
-Copiar código
-php artisan key:generate
-Esto generará una clave única necesaria para que la aplicación funcione correctamente.
+---
+
+## 📦 Instalar dependencias
+
+Instala todas las dependencias del proyecto ejecutando:
+
+```bash
+npm install
+```
