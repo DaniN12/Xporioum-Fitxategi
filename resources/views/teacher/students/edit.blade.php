@@ -11,7 +11,7 @@
       </div>
 
       <div class="p-6 md:p-8">
-        @include('teacher.students._form', ['student' => $student, 'companies' => $companies])
+        @include('teacher.students.form', ['student' => $student, 'companies' => $companies])
       </div>
 
       <div class="p-6 md:p-8 border-t border-slate-100 bg-slate-50">

@@ -6,13 +6,20 @@
 
         <img src="{{ asset('img/logo-fitxategi.png') }}" alt="Fitxategi" class="w-16 mx-auto mb-6">
 
+        {{-- Título cambiado --}}
         <h1 class="text-[32px] font-serif font-semibold text-slate-800">
-            {{ __('message.fichar_title') }} <span class="text-indigo-600">Fitxategi</span>
+            Te damos la bienvenida a <span class="text-indigo-600">Fitxategi</span>
         </h1>
 
+        {{-- Quitado el subtítulo --}}
+        {{--
         <p class="text-sm text-slate-500 mt-2 mb-8">
             {{ __('message.fichar_subtitle') }}
         </p>
+        --}}
+
+        {{-- Mantengo el espacio para que no quede pegado --}}
+        <div class="mt-8"></div>
 
         @if(session('success'))
             <div class="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-700 font-semibold">
@@ -81,9 +88,12 @@
             </a>
         </div>
 
+        {{-- Quitado el footer --}}
+        {{--
         <p class="mt-8 text-xs text-slate-400 text-center">
             {{ __('message.fichar_footer') }}
         </p>
+        --}}
     </div>
 </div>
 @endsection

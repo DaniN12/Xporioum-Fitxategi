@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class FichajeController extends Controller
 {
+    /**
+     * Si alguien abre /qr/{token} (por ejemplo escaneo “normal” desde móvil),
+     * intentamos consumir el token.
+     * - Si NO está logueado: lo mandamos a login con error/aviso.
+     * - Si está logueado: registramos entrada y borramos el token.
+     */
     public function consumeQrPublic(Request $request, string $token)
     {
         $qr = DB::table('qr_tokens')
@@ -20,46 +27,34 @@ class FichajeController extends Controller
             return redirect()->route('login.form')->with('error', 'QR inválido o caducado.');
         }
 
-        $request->session()->put('pending_qr_token', $token);
-
+        // Si no hay sesión, obligamos login (tu app requiere usuario)
         if (!$request->session()->has('id_usuario')) {
-            return redirect()->route('login.form');
+            // opcional: guardamos token por si luego quieres consumirlo tras login
+            $request->session()->put('pending_qr_token', $token);
+            return redirect()->route('login.form')->with('error', 'Inicia sesión para fichar con QR.');
         }
 
-        return redirect()->route('fichar.vista');
+        // Está logueado: fichamos entrada si procede y consumimos token
+        $this->ficharEntradaSiNoExisteHoy($request);
+
+        DB::table('qr_tokens')->where('token', $token)->delete();
+        $request->session()->forget('pending_qr_token');
+
+        return redirect()->route('fichar.vista')->with('success', 'Entrada registrada correctamente.');
     }
 
+    /**
+     * Vista principal: decide qué botón mostrar (QR / descanso / retomar / salida / finalizado).
+     */
     public function vistaFichar(Request $request)
     {
-        if ($request->session()->has('pending_qr_token') && $request->session()->has('id_usuario')) {
-            $token = $request->session()->get('pending_qr_token');
-
-            $qr = DB::table('qr_tokens')
-                ->where('token', $token)
-                ->where(function ($q) {
-                    $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
-                })
-                ->first();
-
-            if ($qr) {
-                $this->ficharEntradaSiNoExisteHoy($request);
-
-                DB::table('qr_tokens')->where('token', $token)->delete();
-
-                $request->session()->forget('pending_qr_token');
-                return redirect()->route('fichar.vista')->with('success', 'Entrada registrada correctamente.');
-            } else {
-                $request->session()->forget('pending_qr_token');
-                return redirect()->route('fichar.vista')->with('error', 'QR inválido o caducado.');
-            }
-        }
-
         $alumnoId = $this->getAlumnoId($request);
         if (!$alumnoId) {
             return redirect('/')->with('error', 'No tienes perfil de alumno.');
         }
 
         $hoy = now()->toDateString();
+
         $fichaje = DB::table('fichaje')
             ->where('alumno_id', $alumnoId)
             ->where('fecha', $hoy)
@@ -68,7 +63,12 @@ class FichajeController extends Controller
         $estado = 'esperando_qr';
 
         if ($fichaje) {
-            if (!empty($fichaje->hora_entrada) && empty($fichaje->hora_salida)) {
+            // Finalizado SOLO si hay salida real (evita 00:00:00)
+            if ($fichaje->hora_salida !== null && $fichaje->hora_salida !== '00:00:00') {
+                $estado = 'finalizado';
+            }
+            // Entrada hecha y sin salida -> fase intermedia
+            elseif (!empty($fichaje->hora_entrada) && (empty($fichaje->hora_salida) || $fichaje->hora_salida === '00:00:00')) {
                 if (empty($fichaje->hora_inicio_descanso)) {
                     $estado = 'descanso';
                 } elseif (!empty($fichaje->hora_inicio_descanso) && empty($fichaje->hora_fin_descanso)) {
@@ -76,10 +76,6 @@ class FichajeController extends Controller
                 } else {
                     $estado = 'salida';
                 }
-            }
-
-            if (!empty($fichaje->hora_salida)) {
-                $estado = 'finalizado';
             }
         }
 
@@ -91,6 +87,10 @@ class FichajeController extends Controller
         return view('escanear_qr');
     }
 
+    /**
+     * Validación del QR (POST desde el escáner).
+     * Este es el flujo principal recomendado.
+     */
     public function validarQR(Request $request)
     {
         $request->validate([
@@ -110,6 +110,7 @@ class FichajeController extends Controller
 
         $this->ficharEntradaSiNoExisteHoy($request);
 
+        // token de un solo uso
         DB::table('qr_tokens')->where('token', $request->token)->delete();
 
         return redirect()->route('fichar.vista')->with('success', 'Entrada registrada correctamente.');
@@ -169,7 +170,7 @@ class FichajeController extends Controller
             return back()->with('error', 'No tienes un descanso activo.');
         }
 
-        $inicio = \Carbon\Carbon::createFromFormat('H:i:s', substr($fichaje->hora_inicio_descanso, 0, 8));
+        $inicio = Carbon::createFromFormat('H:i:s', substr($fichaje->hora_inicio_descanso, 0, 8));
         $fin = now();
         $min = $inicio->diffInMinutes($fin);
 
@@ -217,7 +218,7 @@ class FichajeController extends Controller
             return back()->with('error', 'Primero debes fichar la entrada.');
         }
 
-        if (!empty($fichaje->hora_salida)) {
+        if (!empty($fichaje->hora_salida) && $fichaje->hora_salida !== '00:00:00') {
             return back()->with('error', 'Ya has fichado la salida.');
         }
 
@@ -225,7 +226,7 @@ class FichajeController extends Controller
             return back()->with('error', 'Primero debes REANUDAR para poder fichar la salida.');
         }
 
-        $entrada = \Carbon\Carbon::createFromFormat('H:i:s', substr($fichaje->hora_entrada, 0, 8));
+        $entrada = Carbon::createFromFormat('H:i:s', substr($fichaje->hora_entrada, 0, 8));
         $salida = now();
 
         $minTrab = $entrada->diffInMinutes($salida);
@@ -241,11 +242,17 @@ class FichajeController extends Controller
                 'total_horas' => $horasFinal,
             ]);
 
-        return back()->with('success', 'Salida registrada. Jornada finalizada.');
+        return back()->with('success', 'Salida registrada.');
     }
 
+    /**
+     * Obtiene alumnoId desde sesión (más fiable/rápido). Si no existe, cae a BD.
+     */
     private function getAlumnoId(Request $request)
     {
+        $alumnoId = $request->session()->get('alumno_id');
+        if ($alumnoId) return $alumnoId;
+
         $userId = $request->session()->get('id_usuario');
         if (!$userId) return null;
 
@@ -254,6 +261,9 @@ class FichajeController extends Controller
             ->value('id_alumno');
     }
 
+    /**
+     * Crea fichaje de hoy si no existe, o pone hora_entrada si estaba vacía.
+     */
     private function ficharEntradaSiNoExisteHoy(Request $request)
     {
         $alumnoId = $this->getAlumnoId($request);

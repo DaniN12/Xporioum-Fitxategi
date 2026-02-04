@@ -33,20 +33,32 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   CONSTRAINT `alumno_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id_usuario`),
   CONSTRAINT `alumno_ibfk_2` FOREIGN KEY (`profesor_id`) REFERENCES `profesor` (`id_profesor`),
   CONSTRAINT `alumno_ibfk_3` FOREIGN KEY (`empresa_id`) REFERENCES `empresa` (`id_empresa`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.alumno: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.alumno: ~16 rows (aproximadamente)
 INSERT INTO `alumno` (`id_alumno`, `usuario_id`, `profesor_id`, `empresa_id`, `fecha_alta`) VALUES
 	(1, 1, 1, 1, '2026-01-19'),
 	(2, 3, 1, 1, '2026-01-26'),
 	(3, 4, 1, 1, '2026-01-29'),
 	(9, 10, 1, 1, '2026-01-29'),
-	(10, 11, 1, 1, '2026-01-30');
+	(10, 11, 1, 1, '2026-01-30'),
+	(11, 12, 1, 1, '2026-02-01'),
+	(12, 13, 1, 1, '2026-02-03'),
+	(13, 14, 1, 1, '2026-02-03'),
+	(14, 15, 1, 1, '2026-02-03'),
+	(15, 16, 1, 1, '2026-02-03'),
+	(16, 17, 1, 1, '2026-02-03'),
+	(17, 18, 1, 1, '2026-02-03'),
+	(18, 19, 1, 1, '2026-02-03'),
+	(19, 20, 1, 1, '2026-02-03'),
+	(20, 21, 1, 1, '2026-02-03'),
+	(21, 22, 1, 1, '2026-02-03');
 
 -- Volcando estructura para tabla fitxategi.documento
 CREATE TABLE IF NOT EXISTS `documento` (
   `id_documento` int NOT NULL AUTO_INCREMENT,
-  `incidencia_id` int NOT NULL,
+  `id_usuario` int NOT NULL,
+  `incidencia_id` int DEFAULT NULL,
   `nombre_archivo` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `ruta_archivo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `tipo_archivo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -54,9 +66,13 @@ CREATE TABLE IF NOT EXISTS `documento` (
   PRIMARY KEY (`id_documento`),
   KEY `incidencia_id` (`incidencia_id`),
   CONSTRAINT `documento_ibfk_1` FOREIGN KEY (`incidencia_id`) REFERENCES `incidencia` (`id_incidencia`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.documento: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.documento: ~3 rows (aproximadamente)
+INSERT INTO `documento` (`id_documento`, `id_usuario`, `incidencia_id`, `nombre_archivo`, `ruta_archivo`, `tipo_archivo`, `fecha_subida`) VALUES
+	(1, 1, NULL, 'Contrato_firmado_20260203_225143.pdf', 'documentos/1/Contrato_firmado_20260203_225143.pdf', 'norma_firmada', '2026-02-03 23:51:43'),
+	(2, 20, NULL, 'Contrato_firmado_20260203_231356.pdf', 'documentos/20/Contrato_firmado_20260203_231356.pdf', 'norma_firmada', '2026-02-04 00:13:56'),
+	(3, 22, NULL, 'Contrato_firmado_20260203_235404.pdf', 'documentos/22/Contrato_firmado_20260203_235404.pdf', 'norma_firmada', '2026-02-04 00:54:04');
 
 -- Volcando estructura para tabla fitxategi.empresa
 CREATE TABLE IF NOT EXISTS `empresa` (
@@ -76,7 +92,7 @@ INSERT INTO `empresa` (`id_empresa`, `nombre`, `direccion`, `telefono`, `email_c
 CREATE TABLE IF NOT EXISTS `fichaje` (
   `id_fichaje` int NOT NULL AUTO_INCREMENT,
   `alumno_id` int NOT NULL,
-  `pin_id` int NOT NULL,
+  `pin_id` int DEFAULT NULL,
   `fecha` date NOT NULL,
   `hora_entrada` time NOT NULL,
   `hora_salida` time DEFAULT NULL,
@@ -88,11 +104,21 @@ CREATE TABLE IF NOT EXISTS `fichaje` (
   PRIMARY KEY (`id_fichaje`),
   KEY `alumno_id` (`alumno_id`),
   KEY `pin_id` (`pin_id`),
-  CONSTRAINT `fichaje_ibfk_1` FOREIGN KEY (`alumno_id`) REFERENCES `alumno` (`id_alumno`),
-  CONSTRAINT `fichaje_ibfk_2` FOREIGN KEY (`pin_id`) REFERENCES `pin` (`id_pin`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `fichaje_ibfk_1` FOREIGN KEY (`alumno_id`) REFERENCES `alumno` (`id_alumno`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.fichaje: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.fichaje: ~10 rows (aproximadamente)
+INSERT INTO `fichaje` (`id_fichaje`, `alumno_id`, `pin_id`, `fecha`, `hora_entrada`, `hora_salida`, `total_horas`, `descanso_inicio`, `minutos_descanso`, `hora_inicio_descanso`, `hora_fin_descanso`) VALUES
+	(3, 1, NULL, '2026-02-03', '00:16:40', '00:17:49', 0.02, '2026-02-03 00:17:40', 0, '00:17:40', '00:17:43'),
+	(4, 13, NULL, '2026-02-03', '19:12:58', '19:13:07', 0.00, '2026-02-03 19:13:04', 0, '19:13:04', '19:13:05'),
+	(5, 14, NULL, '2026-02-03', '19:35:48', NULL, NULL, '2026-02-03 19:35:55', 0, '19:35:55', NULL),
+	(6, 15, NULL, '2026-02-03', '19:39:41', '19:39:56', 0.00, '2026-02-03 19:39:46', 0, '19:39:46', '19:39:51'),
+	(7, 16, NULL, '2026-02-03', '19:47:26', NULL, NULL, NULL, 0, NULL, NULL),
+	(8, 17, NULL, '2026-02-03', '19:50:07', '19:50:31', 0.01, '2026-02-03 19:50:23', 0, '19:50:23', '19:50:27'),
+	(9, 18, NULL, '2026-02-03', '23:05:11', '23:05:28', 0.00, '2026-02-03 23:05:17', 0, '23:05:17', '23:05:22'),
+	(10, 19, NULL, '2026-02-03', '23:11:57', '23:12:10', 0.00, '2026-02-03 23:12:03', 0, '23:12:03', '23:12:07'),
+	(11, 20, NULL, '2026-02-03', '23:44:13', '23:44:30', 0.00, '2026-02-03 23:44:20', 0, '23:44:20', '23:44:24'),
+	(12, 21, NULL, '2026-02-03', '23:52:03', '23:52:19', 0.00, '2026-02-03 23:52:10', 0, '23:52:10', '23:52:15');
 
 -- Volcando estructura para tabla fitxategi.idioma
 CREATE TABLE IF NOT EXISTS `idioma` (
@@ -124,11 +150,13 @@ CREATE TABLE IF NOT EXISTS `incidencia` (
   KEY `profesor_id` (`profesor_id`),
   CONSTRAINT `incidencia_ibfk_1` FOREIGN KEY (`alumno_id`) REFERENCES `alumno` (`id_alumno`),
   CONSTRAINT `incidencia_ibfk_2` FOREIGN KEY (`profesor_id`) REFERENCES `profesor` (`id_profesor`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.incidencia: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.incidencia: ~3 rows (aproximadamente)
 INSERT INTO `incidencia` (`id_incidencia`, `alumno_id`, `profesor_id`, `fecha`, `motivo`, `estado`, `adjunto_path`, `adjunto_nombre`) VALUES
-	(1, 1, 1, '2026-01-29', 'Prueba de ausencia', 'pendiente', NULL, NULL);
+	(1, 1, 1, '2026-01-29', 'Prueba de ausencia', 'aceptada', NULL, NULL),
+	(2, 1, 1, '2025-01-01', 'hola', 'pendiente', 'justificantes/NdoBo7c93HcjYYWFtCeRVwRpTy4lIiWZUIRk8Ocg.jpg', '2.jpg'),
+	(3, 1, 1, '2025-12-05', 'holaaaaaaaaaa 2', 'pendiente', 'justificantes/YJKbpDHvAMbrGqv6JsfGTAyd8VMDadz3Q7gimLlq.jpg', 'npgN4lG9ZVNgHAG1uWjJ.jpg');
 
 -- Volcando estructura para tabla fitxategi.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
@@ -136,12 +164,13 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla fitxategi.migrations: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.migrations: ~3 rows (aproximadamente)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(1, '2026_01_20_073920_add_descanso_to_fichaje_table', 1),
-	(2, '2026_01_20_074113_create_qr_tokens_table', 1);
+	(2, '2026_01_20_074113_create_qr_tokens_table', 1),
+	(3, '2026_02_03_215506_add_id_usuario_to_documento_table', 2);
 
 -- Volcando estructura para tabla fitxategi.normas
 CREATE TABLE IF NOT EXISTS `normas` (
@@ -167,24 +196,19 @@ CREATE TABLE IF NOT EXISTS `pausa` (
   PRIMARY KEY (`id_pausa`),
   KEY `fichaje_id` (`fichaje_id`),
   CONSTRAINT `pausa_ibfk_1` FOREIGN KEY (`fichaje_id`) REFERENCES `fichaje` (`id_fichaje`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.pausa: ~0 rows (aproximadamente)
-
--- Volcando estructura para tabla fitxategi.pin
-CREATE TABLE IF NOT EXISTS `pin` (
-  `id_pin` int NOT NULL AUTO_INCREMENT,
-  `codigo_pin` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `profesor_id` int NOT NULL,
-  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
-  `fecha_expiracion` datetime DEFAULT NULL,
-  `activo` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`id_pin`),
-  KEY `profesor_id` (`profesor_id`),
-  CONSTRAINT `pin_ibfk_1` FOREIGN KEY (`profesor_id`) REFERENCES `profesor` (`id_profesor`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Volcando datos para la tabla fitxategi.pin: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.pausa: ~9 rows (aproximadamente)
+INSERT INTO `pausa` (`id_pausa`, `fichaje_id`, `hora_inicio`, `hora_fin`, `duracion`) VALUES
+	(1, 3, '00:17:40', '00:17:43', 0),
+	(2, 4, '19:13:04', '19:13:05', 0),
+	(3, 5, '19:35:55', NULL, NULL),
+	(4, 6, '19:39:46', '19:39:51', 0),
+	(5, 8, '19:50:23', '19:50:27', 0),
+	(6, 9, '23:05:17', '23:05:22', 0),
+	(7, 10, '23:12:03', '23:12:07', 0),
+	(8, 11, '23:44:20', '23:44:24', 0),
+	(9, 12, '23:52:10', '23:52:15', 0);
 
 -- Volcando estructura para tabla fitxategi.profesor
 CREATE TABLE IF NOT EXISTS `profesor` (
@@ -209,29 +233,16 @@ CREATE TABLE IF NOT EXISTS `qr_tokens` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `qr_tokens_token_unique` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=329 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla fitxategi.qr_tokens: ~19 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.qr_tokens: ~6 rows (aproximadamente)
 INSERT INTO `qr_tokens` (`id`, `token`, `tipo`, `expires_at`, `created_at`, `updated_at`) VALUES
-	(112, 'ccbd6a1e-081b-4777-b61e-8f1e3d7d1def', 'entrada', '2026-01-30 10:40:19', '2026-01-30 09:20:19', '2026-01-30 09:20:19'),
-	(113, '25a7e0ea-1e23-43cd-8925-5022b8426dae', 'entrada', '2026-01-30 10:41:19', '2026-01-30 09:21:19', '2026-01-30 09:21:19'),
-	(114, '1ed94896-08f8-4bc1-b99c-dbde6b1d241f', 'entrada', '2026-01-30 10:41:39', '2026-01-30 09:21:39', '2026-01-30 09:21:39'),
-	(115, 'a2114ff0-4712-4e49-8c5b-da05ba548797', 'entrada', '2026-01-30 10:41:59', '2026-01-30 09:21:59', '2026-01-30 09:21:59'),
-	(116, 'c49a75b4-debb-425c-8eff-b0b96ee401da', 'entrada', '2026-01-30 10:42:20', '2026-01-30 09:22:20', '2026-01-30 09:22:20'),
-	(117, 'f4197f4f-1ff9-45ca-9a5a-827634d7b208', 'entrada', '2026-01-30 10:42:40', '2026-01-30 09:22:40', '2026-01-30 09:22:40'),
-	(118, '2c6ba583-9c18-4398-a46b-a994b0193a60', 'entrada', '2026-01-30 10:43:00', '2026-01-30 09:23:00', '2026-01-30 09:23:00'),
-	(119, 'deb996c4-bfce-4f94-ba8a-032437358b3f', 'entrada', '2026-01-30 10:43:20', '2026-01-30 09:23:20', '2026-01-30 09:23:20'),
-	(120, 'cc638cc9-f079-471d-9c83-e82d9af20af2', 'entrada', '2026-01-30 10:43:40', '2026-01-30 09:23:40', '2026-01-30 09:23:40'),
-	(121, '6b665c73-d6da-4693-92c6-78ba67ae9cde', 'entrada', '2026-01-30 10:44:00', '2026-01-30 09:24:00', '2026-01-30 09:24:00'),
-	(122, '17d4f2ed-1b5b-4f4f-a595-f8645ac4049e', 'entrada', '2026-01-30 10:44:20', '2026-01-30 09:24:20', '2026-01-30 09:24:20'),
-	(123, '9bc80b98-89e5-479d-aa9a-d4b0a52d4611', 'entrada', '2026-01-30 10:45:06', '2026-01-30 09:25:06', '2026-01-30 09:25:06'),
-	(124, 'efdb1027-5b98-4ce5-a775-2e0db1ad12de', 'entrada', '2026-01-30 10:45:26', '2026-01-30 09:25:26', '2026-01-30 09:25:26'),
-	(125, '530402af-5077-4a5f-9486-3c422e959850', 'entrada', '2026-01-30 10:45:46', '2026-01-30 09:25:46', '2026-01-30 09:25:46'),
-	(126, 'a4ca92f3-7a28-4cb0-8964-d139833697db', 'entrada', '2026-01-30 10:46:06', '2026-01-30 09:26:06', '2026-01-30 09:26:06'),
-	(127, 'bd75fc8b-1544-4299-bba8-0a1f28523abf', 'entrada', '2026-01-30 10:46:26', '2026-01-30 09:26:26', '2026-01-30 09:26:26'),
-	(128, 'a39053f4-fef3-443d-a168-fc89875662a1', 'entrada', '2026-01-30 10:46:46', '2026-01-30 09:26:46', '2026-01-30 09:26:46'),
-	(129, '396def6f-51ed-45d6-8185-0d7c414c7f61', 'entrada', '2026-01-30 10:59:41', '2026-01-30 09:39:41', '2026-01-30 09:39:41'),
-	(130, '91f0b87e-ec16-4152-8c97-6267201b0394', 'entrada', '2026-01-30 11:00:00', '2026-01-30 09:40:00', '2026-01-30 09:40:00');
+	(321, '0bf61526-a0ca-4324-8e3c-868080e0e316', 'entrada', '2026-02-04 00:02:53', '2026-02-03 22:42:53', '2026-02-03 22:42:53'),
+	(322, '000b771d-8a98-4a6a-a4f6-9edefd26eaa8', 'entrada', '2026-02-04 00:03:13', '2026-02-03 22:43:13', '2026-02-03 22:43:13'),
+	(323, 'eb54296f-7eb9-47a4-9524-b1bcb7b42110', 'entrada', '2026-02-04 00:03:33', '2026-02-03 22:43:33', '2026-02-03 22:43:33'),
+	(325, 'e24437ad-5b54-4436-8f5e-452f06f78ee8', 'entrada', '2026-02-04 00:07:07', '2026-02-03 22:47:07', '2026-02-03 22:47:07'),
+	(326, 'e6bd7709-292f-4eb3-b01f-d73b46a948e4', 'entrada', '2026-02-04 00:07:27', '2026-02-03 22:47:27', '2026-02-03 22:47:27'),
+	(327, 'eb7b13bc-42ce-4d5e-91ef-697805abe609', 'entrada', '2026-02-04 00:11:16', '2026-02-03 22:51:16', '2026-02-03 22:51:16');
 
 -- Volcando estructura para tabla fitxategi.sessions
 CREATE TABLE IF NOT EXISTS `sessions` (
@@ -274,9 +285,9 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `dni` (`dni`),
   KEY `idioma_id` (`idioma_id`),
   CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`idioma_id`) REFERENCES `idioma` (`id_idioma`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla fitxategi.usuario: ~8 rows (aproximadamente)
+-- Volcando datos para la tabla fitxategi.usuario: ~19 rows (aproximadamente)
 INSERT INTO `usuario` (`id_usuario`, `email`, `contrasena`, `nombre`, `dni`, `idioma_id`, `fecha_creacion`, `activo`) VALUES
 	(1, 'deiner@gmail.com', '$2y$12$QEhxR0unMQkY33J0Q0p3lemxkhMwrPbHCfk/tmbO9uZxZ3xUYJqXS', 'deiner', '12345678A', 1, '2026-01-19 09:56:58', 1),
 	(2, 'profesor@gmail.com', '$2y$12$IJfB.6QR6ZFtSC7ZULm0K.AngnHngRryKcojtGrjmDZfR2EwKmsqi', 'profesor', '111111111B', 1, '2026-01-19 12:56:09', 1),
@@ -285,7 +296,18 @@ INSERT INTO `usuario` (`id_usuario`, `email`, `contrasena`, `nombre`, `dni`, `id
 	(5, 'joane@gmail.com', '$2y$12$q58//YFuW/2aadO9gYeFXepRPCC3DJNcXA5PMYXdPhtPof.A7fxbS', 'Joane', '987654321J', 1, '2026-01-29 12:40:52', 1),
 	(6, 'alcubilla@gmail.com', '$2y$12$TE4vteyuxqGl7jAmTCOlLOpZQ7LnCdOgEOuqJBieBbbIPo6rxyM3K', 'Joane', '88888888A', 1, '2026-01-29 13:23:30', 1),
 	(10, 'deineruyuquipa@gmail.com', '$2y$12$LKzkuxhPE3rV8lkKDyIn/euui.fnxc51OqM5/lsUZJL3KxrqfrfIC', 'Deiner', '22222222D', 1, '2026-01-30 00:34:47', 1),
-	(11, 'balboa@gmail.com', '$2y$12$1733TPUGUswRQ7.TDGccr.3Kp3Fv01ySS/UVqsbNrR2xRiBuSJgh2', 'Beverly balboa', '22222222A', 1, '2026-01-30 11:37:27', 0);
+	(11, 'balboa@gmail.com', '$2y$12$1733TPUGUswRQ7.TDGccr.3Kp3Fv01ySS/UVqsbNrR2xRiBuSJgh2', 'Beverly balboa', '22222222A', 1, '2026-01-30 11:37:27', 1),
+	(12, 'sonia@gmail.com', '$2y$12$316ZbB/OrfC.Wvtg0BAumO63v768uu8B/qLyFOHN4AULRffT5qlby', 'Sonia', '111111111S', 1, '2026-02-01 20:13:08', 1),
+	(13, 'pepito@gmail.com', '$2y$12$06uXfI8rpnr/SCh0y3h.2uzzZSGRNrWb/68Hn8aTVGuIwWhLwazfe', 'pepito', '44444444P', 1, '2026-02-03 01:36:29', 1),
+	(14, 'unai@gmail.com', '$2y$12$8s/MOdJTIsVFGPDfKmbrueyrzBanT.aOeKMnfxOwY9AH5RcpSLB6.', 'Unai', '1111111U', 1, '2026-02-03 20:07:14', 1),
+	(15, 'alejandro@gmail.com', '$2y$12$HoKRAmcKH9RUh5Wqdd8y6OUWAti3NA5ZtJzjxYsqZmeteBcFVnsDa', 'alejandro', '111112222A', 1, '2026-02-03 20:25:49', 1),
+	(16, 'alberto@gmail.com', '$2y$12$nLB0Kksl/lSTuyDhf6vSouSdt/HOy8HaD3IBhkyg4kYfKiPjo3dvC', 'alberto', '66666666A', 1, '2026-02-03 20:36:54', 1),
+	(17, 'iban@gmail.com', '$2y$12$h3VRFhfYunc.oD6NGebu..p49JHh3OBbhdg4yrNo3uWBTpy63eBJe', 'iban', '8888888I', 1, '2026-02-03 20:43:50', 1),
+	(18, 'usuario@gmail.com', '$2y$12$pYyHFGC8rOMhoSDpUyl8SuweTcsbQuUMxPcpuGzAF58lWABnLQE7u', 'usuario', '111111111111A', 1, '2026-02-03 20:48:55', 1),
+	(19, 'user@gmail.com', '$2y$12$naoXbSPxKpsE.5PCWCfsHOiJhJTn7RRf6nbaBhmfi.tsWvdKmiX0q', 'user', '11111111111U', 1, '2026-02-04 00:00:40', 1),
+	(20, 'javier@gmail.com', '$2y$12$I9zJ.JhOonSKcgvyE.Y8M.7r13GaTel2SdV16xEJRbXZyahJFMK4y', 'javier', '234567765F', 1, '2026-02-04 00:09:44', 1),
+	(21, 'deinerj@gmail.com', '$2y$12$vpS5HiGhf3v8pXRz1cRY6.TjMUlEW.za.ALCIBuIpAF.mBAeUGY.2', 'deiner', '888888888Q', 1, '2026-02-04 00:42:14', 1),
+	(22, 'deineru@gmail.com', '$2y$12$Hnqp062N7APqkEAPCubWq.PnPtNBlUQMbFb3wzcpcSVA79a.emHrq', 'deiner', '2323232323A', 1, '2026-02-04 00:45:39', 1);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -40,15 +40,20 @@
             {{ __('message.qr_subtitle') }}
         </p>
 
+        {{-- ✅ Mostrar error si el QR es inválido/caducado --}}
+        @if(session('error'))
+            <p class="text-sm text-red-600 mb-3">{{ session('error') }}</p>
+        @endif
+
         <div class="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-slate-50/40
-                    h-32 flex items-center justify-center mb-4 overflow-hidden">
+                    h-56 flex items-center justify-center mb-4 overflow-hidden">
 
             <div id="reader" class="w-full h-full flex items-center justify-center">
                 <span class="text-sm text-slate-400">{{ __('message.qr_camera_preview') }}</span>
             </div>
         </div>
 
-        <p id="msgCam" class="text-xs text-slate-500 mb-8">
+        <p id="msgCam" class="text-xs text-slate-500 mb-6">
             {{ __('message.qr_camera_error_initial') }}
         </p>
 
@@ -79,74 +84,99 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.10/html5-qrcode.min.js"></script>
+@endsection
+
+
+@section('scripts')
+<script src="{{ asset('js/html5-qrcode.min.js') }}"></script>
 
 <script>
-const btn = document.getElementById('btnActivarCamara');
-const msg = document.getElementById('msgCam');
-const readerEl = document.getElementById('reader');
+document.addEventListener("DOMContentLoaded", () => {
 
-let html5QrCode = null;
-let running = false;
+  const btn = document.getElementById('btnActivarCamara');
+  const msg = document.getElementById('msgCam');
+  const readerEl = document.getElementById('reader');
 
-function extraerTokenDesdeTexto(texto) {
-    const m = texto.match(/\/qr\/([0-9a-fA-F-]{20,})/);
-    if (m && m[1]) return { type: 'url', token: m[1], url: texto };
+  let html5QrCode = null;
+  let running = false;
+  let processing = false;
 
-    const m2 = texto.match(/[0-9a-fA-F-]{20,}/);
-    if (m2) return { type: 'token', token: m2[0] };
+  // Devuelve SOLO el token (aunque venga dentro de una URL /qr/{token})
+  function extraerTokenDesdeTexto(texto) {
+      const m = texto.match(/\/qr\/([0-9a-fA-F-]{20,})/);
+      if (m && m[1]) return m[1];
 
-    return null;
-}
+      const m2 = texto.match(/[0-9a-fA-F-]{20,}/);
+      if (m2) return m2[0];
 
-async function iniciarCamara() {
-    if (running) return;
+      return null;
+  }
 
-    msg.textContent = "{{ __('message.qr_camera_starting') }}";
-    btn.disabled = true;
-    readerEl.innerHTML = "";
+  async function iniciarCamara() {
+      if (running) return;
 
-    html5QrCode = new Html5Qrcode("reader");
+      if (typeof Html5Qrcode === "undefined") {
+          msg.textContent = "La librería QR no cargó. Revisa public/js/html5-qrcode.min.js";
+          return;
+      }
 
-    try {
-        const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+      msg.textContent = "Buscando cámara...";
+      btn.disabled = true;
+      readerEl.innerHTML = "";
 
-        await html5QrCode.start(
-            { facingMode: "environment" },
-            config,
-            (decodedText) => {
-                const info = extraerTokenDesdeTexto(decodedText);
-                if (!info) return;
+      try {
+          const cameras = await Html5Qrcode.getCameras();
 
-                running = false;
-                html5QrCode.stop().catch(() => {});
-                html5QrCode.clear().catch(() => {});
+          if (!cameras || cameras.length === 0) {
+              msg.textContent = "No se detectó ninguna webcam.";
+              btn.disabled = false;
+              return;
+          }
 
-                msg.textContent = "{{ __('message.qr_detected') }}";
+          const cameraId = cameras[0].id;
 
-                if (info.type === 'url') {
-                    window.location.href = decodedText;
-                    return;
-                }
+          html5QrCode = new Html5Qrcode("reader");
 
-                document.getElementById('tokenInput').value = info.token;
-                document.getElementById('formValidar').submit();
-            }
-        );
+          await html5QrCode.start(
+              { deviceId: { exact: cameraId } },
+              { fps: 10, qrbox: { width: 250, height: 250 } },
+              async (decodedText) => {
+                  if (processing) return;
 
-        running = true;
-        msg.textContent = "{{ __('message.qr_camera_active') }}";
-        btn.textContent = "{{ __('message.qr_camera_active_btn') }}";
+                  const token = extraerTokenDesdeTexto(decodedText);
+                  if (!token) return;
 
-    } catch (e) {
-        console.error(e);
-        msg.textContent = "{{ __('message.qr_camera_error') }}";
-        btn.disabled = false;
-        readerEl.innerHTML = '<span class="text-sm text-slate-400">{{ __('message.qr_camera_preview') }}</span>';
-    }
-}
+                  processing = true;
+                  msg.textContent = "QR detectado";
 
-btn.addEventListener('click', iniciarCamara);
+                  try {
+                      await html5QrCode.stop();
+                      await html5QrCode.clear();
+                  } catch (e) {
+                      // no rompemos nada si falla el stop/clear
+                  }
+
+                  document.getElementById('tokenInput').value = token;
+                  document.getElementById('formValidar').submit();
+              }
+          );
+
+          running = true;
+          processing = false;
+          msg.textContent = "Cámara activa";
+          btn.textContent = "Cámara activa";
+          btn.disabled = false; // ✅ por si quieres permitir reinicio manual
+
+      } catch (e) {
+          console.error(e);
+          msg.textContent = "Error accediendo a la cámara. Revisa permisos del navegador.";
+          btn.disabled = false;
+          running = false;
+          processing = false;
+      }
+  }
+
+  btn.addEventListener('click', iniciarCamara);
+});
 </script>
-
 @endsection

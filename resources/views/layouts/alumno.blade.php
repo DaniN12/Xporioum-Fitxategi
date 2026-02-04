@@ -20,7 +20,8 @@
 
 <div x-data="{ openCuenta: {{ request()->routeIs('cuenta.*') ? 'true' : 'false' }} }" class="min-h-screen md:flex relative">
 
-    <div class="absolute top-6 left-6 md:left-auto md:right-6 flex gap-2 z-50">
+   <div class="absolute top-3 right-4 md:top-6 md:right-6 flex gap-2 z-50">
+
         <a href="{{ route('setLocale', 'es') }}">
             <img src="{{ asset('img/español.png') }}" class="w-10 hover:scale-110 transition-transform" alt="Español">
         </a>
@@ -104,7 +105,8 @@
         </nav>
     </aside>
 
-    <main class="flex-1 px-6 md:px-12 py-10">
+    <main class="flex-1 px-6 md:px-12 py-10 pt-16 md:pt-10">
+
         @yield('content')
     </main>
 

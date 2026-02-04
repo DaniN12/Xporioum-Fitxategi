@@ -1,36 +1,39 @@
 @extends('layouts.alumno', ['title' => __('message.docs_title')])
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-  @if(session('success'))
-    <div class="mb-4 p-3 rounded-xl bg-green-100 text-green-700 font-semibold">
-      {{ session('success') }}
-    </div>
-  @endif
+<div class="max-w-4xl mx-auto px-4 sm:px-6">
+  <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
+    <h2 class="text-2xl font-extrabold mb-6">Mis documentos</h2>
 
-  <div class="bg-white rounded-2xl shadow p-6">
-    <h2 class="text-2xl font-extrabold mb-6">{{ __('message.docs_heading') }}</h2>
+    @if(empty($docs) || $docs->isEmpty())
+      <div class="text-center py-10 text-gray-500">
+        No tienes documentos todavía.
+      </div>
+    @else
+      <div class="space-y-3 sm:space-y-4">
+        @foreach($docs as $doc)
+          <div class="border rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div class="min-w-0">
+              <div class="font-bold text-gray-900 break-words">
+                {{ $doc->nombre_archivo }}
+              </div>
+              <div class="text-sm text-gray-500 mt-1">
+                {{ $doc->tipo_archivo }}
+              </div>
+            </div>
 
-    <form action="{{ route('cuenta.documentos.upload') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-      @csrf
+            <a class="w-full sm:w-auto inline-flex items-center justify-center
+                      px-4 py-3 sm:py-2 rounded-xl bg-indigo-600 text-white font-bold
+                      hover:bg-indigo-700 active:bg-indigo-800 transition shadow whitespace-nowrap"
+               href="{{ Storage::disk('public')->url($doc->ruta_archivo) }}"
+               target="_blank">
+              Descargar
+            </a>
+          </div>
+        @endforeach
+      </div>
+    @endif
 
-      <select name="tipo" class="w-full border rounded-xl p-3 bg-white">
-        <option value="personal">{{ __('message.docs_type_personal') }}</option>
-        <option value="otros">{{ __('message.docs_type_other') }}</option>
-      </select>
-
-      <input type="file" name="documento" class="w-full border rounded-xl p-3 bg-white" required>
-
-      <button class="w-full py-3 rounded-xl font-extrabold text-white bg-[#4338ca] hover:opacity-90">
-        {{ __('message.docs_upload_button') }}
-      </button>
-    </form>
-
-    <div class="mt-6 text-sm text-gray-500">
-      {{ __('message.docs_note') }}
-      <code>doc_personal_path</code> / <code>doc_otros_path</code>,
-      {{ __('message.docs_note_2') }}
-    </div>
   </div>
 </div>
 @endsection

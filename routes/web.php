@@ -7,13 +7,13 @@ use App\Http\Controllers\FichajeController;
 use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\NormasController;
 
 // TEACHER
 use App\Http\Controllers\Teacher\StudentController;
 use App\Http\Controllers\Teacher\QrController;
 use App\Http\Controllers\Teacher\AttendanceController as TeacherAttendanceController;
 use App\Http\Controllers\Teacher\AbsenceController as TeacherAbsenceController;
-
 
 Route::get('/set-locale/{locale}', function ($locale) {
     if (in_array($locale, ['es', 'en', 'eu'])) {
@@ -49,9 +49,16 @@ Route::middleware(['locale'])->group(function () {
     Route::get('/incidencias/crear', [IncidenciaController::class, 'create'])->name('incidencias.create');
     Route::post('/incidencias', [IncidenciaController::class, 'store'])->name('incidencias.store');
 
-    Route::get('/normas', function () {
-        return view('normas.index');
-    })->name('normas');
+    /*
+    |--------------------------------------------------------------------------
+    | NORMAS + FIRMA DIGITAL
+    |--------------------------------------------------------------------------
+    | IMPORTANTE: SIN middleware auth porque tu login NO está usando Auth::login()
+    | y el middleware auth te manda a /login aunque estés "dentro" por tu sistema.
+    */
+    Route::get('/normas', [NormasController::class, 'show'])->name('normas');
+    Route::post('/normas/firmar', [NormasController::class, 'firmar'])->name('normas.firmar');
+    Route::get('/cuenta/documentos', [NormasController::class, 'misDocumentos'])->name('cuenta.documentos');
 
     Route::prefix('cuenta')->name('cuenta.')->group(function () {
 
@@ -60,11 +67,8 @@ Route::middleware(['locale'])->group(function () {
         Route::get('/datos', [CuentaController::class, 'datos'])->name('datos');
         Route::post('/datos', [CuentaController::class, 'datosUpdate'])->name('datos.update');
 
-        Route::get('/documentos', [CuentaController::class, 'documentos'])->name('documentos');
-        Route::post('/documentos', [CuentaController::class, 'documentosUpload'])->name('documentos.upload');
-
-        Route::get('/documentos/{tipo}/download', [CuentaController::class, 'documentoDownload'])
-            ->name('documentos.download');
+        // OJO: aquí ya lo estamos mostrando con NormasController->misDocumentos()
+        Route::get('/documentos', [NormasController::class, 'misDocumentos'])->name('documentos');
 
         Route::get('/notificaciones', [CuentaController::class, 'notificaciones'])->name('notificaciones');
 

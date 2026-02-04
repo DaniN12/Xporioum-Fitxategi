@@ -13,6 +13,7 @@
 <body>
     @yield('content')
 
+    {{-- Scripts específicos de cada vista --}}
     @yield('scripts')
 </body>
 </html>

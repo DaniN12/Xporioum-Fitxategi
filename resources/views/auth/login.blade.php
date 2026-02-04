@@ -49,10 +49,7 @@
             {{ __('message.login_title') }}
         </h1>
 
-        <p class="text-sm text-slate-500 mt-2 mb-10">
-            {{ __('message.welcome_back') }}
-        </p>
-
+       
         {{-- ERROR GENERAL LOGIN --}}
         @if(session('error'))
             <div class="mb-6 rounded-xl border border-red-200 bg-red-50
@@ -144,9 +141,7 @@
 
         </form>
 
-        <p class="mt-8 text-xs text-slate-400 text-center">
-            {{ __('message.footer_access') }}
-        </p>
+        
 
     </div>
 </div>

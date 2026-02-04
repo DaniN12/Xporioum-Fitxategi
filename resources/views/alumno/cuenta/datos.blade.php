@@ -19,9 +19,7 @@
     <div class="flex items-start justify-between gap-4 mb-6">
       <div>
         <h2 class="text-2xl font-extrabold">{{ __('message.profile_heading') }}</h2>
-        <p class="text-sm text-gray-500 mt-1">
-          {{ __('message.profile_locked_text') }}
-        </p>
+        
       </div>
 
       <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 border text-slate-700 font-semibold text-sm">
@@ -86,9 +84,7 @@
           class="w-full border rounded-xl p-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
         >{{ old('solicitud') }}</textarea>
 
-        <p class="text-xs text-gray-400 mt-2">
-          {{ __('message.profile_request_note') }}
-        </p>
+       
       </div>
 
       <button class="w-full py-3 rounded-xl font-extrabold text-white bg-indigo-600 hover:bg-indigo-700 transition">

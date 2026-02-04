@@ -17,7 +17,7 @@
           </div>
         @endif
 
-        @include('teacher.students._form', ['companies' => $companies])
+        @include('teacher.students.form', ['companies' => $companies])
       </div>
 
       <div class="p-6 md:p-8 border-t border-slate-100 bg-slate-50">
